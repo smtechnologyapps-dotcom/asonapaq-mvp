@@ -1,0 +1,545 @@
+{
+  "$schema": "https://asonapaq.org/schemas/v2/navigation-flow.json",
+  "meta": {
+    "title": "ASONAPAQ Logical Navigation & State Architecture Specification",
+    "organization": "Asociación Nacional de Pacientes de Quimioterapia (ASONAPAQ)",
+    "country": "República de Panamá",
+    "foundation_year": 1989,
+    "legal_framework": "Ley 81 de 2019 de Protección de Datos Personales de Panamá",
+    "specification_version": "2.0.0-ANTIGRAVITY",
+    "generated_at": "2026-10-03T13:20:00Z",
+    "author_role": "Principal Software Engineer & Frontend Architect",
+    "target_runtime": "Antigravity 2.0 Autonomous Agent & Next.js Fullstack Engine",
+    "description": "Especificación técnica formal de navegación dinámica, persistencia de estado reactivo y catálogo de triggers/webhooks para n8n de la plataforma ASONAPAQ."
+  },
+  "routing_architecture": {
+    "default_route": "inicio_publica",
+    "routes": [
+      {
+        "id": "inicio_publica",
+        "path": "/",
+        "name": "Inicio Pública",
+        "icon": "home",
+        "lucide_icon": "Home",
+        "access_level": "PUBLIC",
+        "description": "Portal público de acogida, misión, visión, cifras de impacto institucional (+35 años, +14k familias) y selector de perfil rápido.",
+        "subsections": [
+          "hero_narrativo",
+          "selector_perfil_acceso",
+          "linea_asistencia_urgente",
+          "cifras_impacto_bento",
+          "pilares_ayuda_asistencial",
+          "mision_vision_valores",
+          "mensaje_fe_esperanza"
+        ],
+        "allowed_transitions": [
+          { "target": "portal_pacientes", "trigger": "CLICK_ROL_PACIENTE" },
+          { "target": "portal_voluntarios", "trigger": "CLICK_ROL_VOLUNTARIO" },
+          { "target": "muro_comunicaciones", "trigger": "CLICK_ROL_COLABORADOR" },
+          { "target": "panel_administracion", "trigger": "NAV_BOTTOM_ADMIN" },
+          { "target": "auditoria_social", "trigger": "CLICK_FOOTER_AUDITORIA" }
+        ],
+        "motion_transition": {
+          "type": "fade_slide",
+          "duration_ms": 300,
+          "easing": "cubic-bezier(0.16, 1, 0.3, 1)"
+        }
+      },
+      {
+        "id": "portal_pacientes",
+        "path": "/paciente",
+        "name": "Portal del Paciente",
+        "icon": "healing",
+        "lucide_icon": "HeartHandshake",
+        "access_level": "PATIENT_AND_PUBLIC",
+        "description": "Espacio seguro y compasivo para gestionar requerimientos oncológicos, insumos médicos y derechos amparados por Ley 81 de Panamá.",
+        "subsections": [
+          "alerta_emergencia_medica_ion",
+          "descarga_guia_nutricional_pdf",
+          "banco_insumos_oncologicos",
+          "formulario_solicitud_integral",
+          "gestion_datos_habeas_data"
+        ],
+        "allowed_transitions": [
+          { "target": "inicio_publica", "trigger": "NAV_HEADER_LOGO" },
+          { "target": "muro_comunicaciones", "trigger": "NAV_BOTTOM_COMUNIDAD" },
+          { "target": "portal_voluntarios", "trigger": "NAV_BOTTOM_VOLUNTARIO" }
+        ],
+        "motion_transition": {
+          "type": "slide_left",
+          "duration_ms": 280,
+          "easing": "easeOut"
+        }
+      },
+      {
+        "id": "muro_comunicaciones",
+        "path": "/comunidad",
+        "name": "Muro de Fe, Esperanza y Vida",
+        "icon": "forum",
+        "lucide_icon": "MessageSquareQuote",
+        "access_level": "COMMUNITY_PUBLIC",
+        "description": "Red solidaria de testimonios, campana de la victoria, avisos oficiales de entrega de kits y talleres clínicos con moderación activa.",
+        "subsections": [
+          "hero_inspiracional_comunidad",
+          "modal_compartir_testimonio",
+          "publicacion_oficial_turbantes_ion",
+          "publicacion_campana_victoria",
+          "anuncio_taller_nutricion",
+          "linea_acompanamiento_espiritual"
+        ],
+        "allowed_transitions": [
+          { "target": "inicio_publica", "trigger": "NAV_BOTTOM_INICIO" },
+          { "target": "portal_pacientes", "trigger": "NAV_BOTTOM_PACIENTE" },
+          { "target": "portal_voluntarios", "trigger": "NAV_BOTTOM_VOLUNTARIO" }
+        ],
+        "motion_transition": {
+          "type": "fade_zoom",
+          "duration_ms": 250,
+          "easing": "easeOut"
+        }
+      },
+      {
+        "id": "portal_voluntarios",
+        "path": "/voluntario",
+        "name": "Portal del Voluntario",
+        "icon": "volunteer_activism",
+        "lucide_icon": "Heart",
+        "access_level": "VOLUNTEER_AND_APPLICANT",
+        "description": "Gestión integral de voluntarios (Chalecos Verdes Oficiales), turnos en el Instituto Oncológico Nacional, jornadas y postulación de aspirantes.",
+        "subsections": [
+          "banner_vocacion_esperanza",
+          "segmented_tabs_control",
+          "panel_perfil_carmen_morales",
+          "metricas_horas_y_pacientes",
+          "checkin_hospital_ion",
+          "agenda_proximas_jornadas",
+          "panel_gestion_disponibilidad_semanal",
+          "panel_postulacion_nuevo_voluntario"
+        ],
+        "allowed_transitions": [
+          { "target": "inicio_publica", "trigger": "NAV_BOTTOM_INICIO" },
+          { "target": "panel_administracion", "trigger": "NAV_BOTTOM_ADMIN" },
+          { "target": "junta_tecnica", "trigger": "CLICK_CAPACITACION_CLINICA" }
+        ],
+        "motion_transition": {
+          "type": "slide_right",
+          "duration_ms": 280,
+          "easing": "easeOut"
+        }
+      },
+      {
+        "id": "panel_administracion",
+        "path": "/admin",
+        "name": "Panel de Administración y Coordinación",
+        "icon": "admin_panel_settings",
+        "lucide_icon": "ShieldCheck",
+        "access_level": "ADMIN_COORDINATION",
+        "description": "Consola ejecutiva para coordinadores de ASONAPAQ. Métricas en vivo (482 pacientes, 126 voluntarios, 18 solicitudes), filtros dinámicos por estado, apoyo y provincia panameña.",
+        "subsections": [
+          "header_coordinacion_en_servicio",
+          "kpi_bento_cards",
+          "busqueda_predictiva_cedula_nombre",
+          "filtros_multidimensionales",
+          "listado_expedientes_reactivos",
+          "modal_expediente_humanitario_seguro",
+          "resumen_impacto_distribucion_mensual",
+          "acceso_auditoria_social"
+        ],
+        "allowed_transitions": [
+          { "target": "auditoria_social", "trigger": "CLICK_AUDITORIA_SOCIAL" },
+          { "target": "junta_tecnica", "trigger": "CLICK_JUNTA_TECNICA" },
+          { "target": "inicio_publica", "trigger": "NAV_LOGOUT_ADMIN" }
+        ],
+        "motion_transition": {
+          "type": "scale_fade",
+          "duration_ms": 300,
+          "easing": "easeInOut"
+        }
+      },
+      {
+        "id": "auditoria_social",
+        "path": "/auditoria",
+        "name": "Auditoría Social y Transparencia",
+        "icon": "fact_check",
+        "lucide_icon": "FileCheck2",
+        "access_level": "PUBLIC_TRANSPARENCY",
+        "description": "Rendición de cuentas comunitaria de ASONAPAQ: trazabilidad de donaciones, actas de entrega en el ION, balances contables y personería jurídica.",
+        "subsections": [
+          "resumen_fiscal_donaciones",
+          "trazabilidad_kits_oncologicos",
+          "descarga_memoria_anual_pdf",
+          "registro_personeria_panama"
+        ],
+        "allowed_transitions": [
+          { "target": "panel_administracion", "trigger": "CLICK_REGRESAR_ADMIN" },
+          { "target": "inicio_publica", "trigger": "NAV_BOTTOM_INICIO" }
+        ],
+        "motion_transition": {
+          "type": "fade_slide",
+          "duration_ms": 250,
+          "easing": "easeOut"
+        }
+      },
+      {
+        "id": "junta_tecnica",
+        "path": "/junta-tecnica",
+        "name": "Junta Técnica & Comité Oncológico",
+        "icon": "medical_services",
+        "lucide_icon": "Stethoscope",
+        "access_level": "CLINICAL_ADVISORY",
+        "description": "Órgano consultivo médico de ASONAPAQ. Homologación de apósitos, agujas Huber, compatibilidad de suplementos hiperproteicos y guías clínicas para quimioterapia.",
+        "subsections": [
+          "directorio_especialistas_ion",
+          "protocolo_bioseguridad_voluntarios",
+          "catalogo_aprobado_suplementos",
+          "validacion_casos_especiales"
+        ],
+        "allowed_transitions": [
+          { "target": "panel_administracion", "trigger": "CLICK_REGRESAR_ADMIN" },
+          { "target": "portal_pacientes", "trigger": "CLICK_VER_PROTOCOLO_PACIENTE" }
+        ],
+        "motion_transition": {
+          "type": "fade_slide",
+          "duration_ms": 250,
+          "easing": "easeOut"
+        }
+      }
+    ]
+  },
+  "state_management": {
+    "persistence_engine": "localStorage + Reactive Store Pattern (Zustand/ReactContext compatible)",
+    "storage_key_prefix": "asonapaq_v2_",
+    "stores": {
+      "session_store": {
+        "key": "asonapaq_v2_auth_session",
+        "retention": "PERMANENT_UNTIL_LOGOUT",
+        "state_schema": {
+          "active_role": {
+            "type": "string",
+            "enum": ["publica", "paciente", "voluntario", "coordinador_admin", "medico_junta"],
+            "default": "publica"
+          },
+          "is_authenticated": { "type": "boolean", "default": false },
+          "user_id": { "type": "string", "example": "usr_carmen_morales_089" },
+          "user_display_name": { "type": "string", "example": "Carmen Elena Morales" },
+          "auth_token": { "type": "string", "sensitive": true },
+          "assigned_region": { "type": "string", "default": "Panamá Centro" },
+          "last_login_timestamp": { "type": "string", "format": "ISO8601" }
+        },
+        "synchronization": "Cross-tab BroadcastChannel 'asonapaq_session_sync'"
+      },
+      "patient_registry_store": {
+        "key": "asonapaq_v2_patients_cache",
+        "retention": "ENCRYPTED_LOCAL_CACHE",
+        "state_schema": {
+          "last_synced": { "type": "string", "format": "ISO8601" },
+          "total_count": { "type": "number", "default": 482 },
+          "patients": {
+            "type": "array",
+            "items": {
+              "id": "number",
+              "nombre": "string",
+              "cedula": "string",
+              "diagnostico": "string",
+              "hospital": "string",
+              "apoyo": "string",
+              "region": "string",
+              "estado": "string"
+            }
+          },
+          "offline_pending_registrations": {
+            "type": "array",
+            "description": "Cola de solicitudes guardadas cuando el dispositivo no tiene conexión a internet"
+          }
+        }
+      },
+      "volunteer_coordination_store": {
+        "key": "asonapaq_v2_volunteers_cache",
+        "retention": "CACHED_STORE",
+        "state_schema": {
+          "active_profile": {
+            "id": "string",
+            "nombre": "string",
+            "credencial": "string",
+            "horas_acumuladas": "number",
+            "pacientes_acompanados": "number",
+            "proxima_guardia": "object",
+            "disponibilidad_dias": "array",
+            "turnos_preferidos": "array",
+            "zonas_habilitadas": "array"
+          },
+          "jornadas_inscritas": { "type": "array", "items": "string" }
+        }
+      },
+      "feed_interaction_store": {
+        "key": "asonapaq_v2_community_wall",
+        "retention": "LOCAL_CACHE",
+        "state_schema": {
+          "user_liked_posts": { "type": "array", "items": "string" },
+          "user_created_comments": { "type": "array", "items": "object" },
+          "author_comments_allowed": {
+            "type": "object",
+            "additionalProperties": { "type": "boolean" }
+          },
+          "pending_pastoral_moderation_queue": { "type": "array" }
+        }
+      },
+      "admin_view_store": {
+        "key": "asonapaq_v2_admin_filters",
+        "retention": "SESSION_ONLY",
+        "state_schema": {
+          "active_kpi_tab": { "type": "string", "default": "pacientes" },
+          "search_query": { "type": "string", "default": "" },
+          "filter_estado": { "type": "string", "default": "Todos" },
+          "filter_apoyo": { "type": "string", "default": "Todos" },
+          "filter_region": { "type": "string", "default": "Todos" },
+          "inspecting_patient_id": { "type": "number", "nullable": true }
+        }
+      }
+    }
+  },
+  "events_and_triggers_catalog": {
+    "n8n_base_url_placeholder": "https://n8n.asonapaq.org/webhook/v1",
+    "triggers": [
+      {
+        "event_id": "EVT_REGISTRAR_SOLICITUD_PACIENTE",
+        "display_name": "Registrar Solicitud en ASONAPAQ",
+        "source_ui_element": "#form-apoyo-paciente button[type='submit']",
+        "route_context": "portal_pacientes",
+        "description": "El paciente o su cuidador envía una solicitud de insumos oncológicos, suplementos, contención psicológica o albergue.",
+        "webhook_endpoint": {
+          "method": "POST",
+          "url": "https://n8n.asonapaq.org/webhook/v1/pacientes/solicitud-integral",
+          "headers": {
+            "Content-Type": "application/json",
+            "X-App-Source": "asonapaq-pwa-web",
+            "X-Entity-Context": "PACIENTE_ONCOLOGICO"
+          },
+          "payload_template": {
+            "request_id": "{{GENERATE_UUID_V4}}",
+            "tipo_requerimiento": "{{selected_requirement_type}}",
+            "nombre_paciente": "{{input_nombre_paciente}}",
+            "cedula_paciente": "{{input_cedula_paciente}}",
+            "hospital_paciente": "{{select_hospital_paciente}}",
+            "detalle_solicitud": "{{textarea_detalle_solicitud}}",
+            "archivo_adjunto_url": "{{file_s3_or_base64_ref}}",
+            "submitted_at": "{{CURRENT_ISO_TIMESTAMP}}",
+            "consentimiento_ley_81": true,
+            "dispositivo_origen": {
+              "platform": "Web/Mobile",
+              "user_agent": "{{BROWSER_USER_AGENT}}"
+            }
+          },
+          "expected_n8n_workflow": [
+            "1. Validar cédula panameña (formato X-XXX-XXX)",
+            "2. Subir receta adjunta a carpeta segura Google Drive / GCS de Trabajo Social",
+            "3. Insertar registro en BD de Expedientes Oncológicos",
+            "4. Notificar vía bot de WhatsApp a la Trabajadora Social de guardia",
+            "5. Enviar SMS/WhatsApp de acuse de recibo al paciente con su número de expediente"
+          ],
+          "retry_policy": {
+            "max_attempts": 3,
+            "backoff_multiplier": 2,
+            "offline_queue_fallback": true
+          }
+        }
+      },
+      {
+        "event_id": "EVT_HABEAS_DATA_ELIMINACION",
+        "display_name": "Confirmar Eliminación Definitiva (Hábeas Data Ley 81)",
+        "source_ui_element": "#modal-habeas-data button.confirm-delete",
+        "route_context": "portal_pacientes",
+        "description": "El usuario ejerce su derecho ARCO de cancelación conforme a la Ley 81 de 2019 de la República de Panamá para revocar consentimiento.",
+        "webhook_endpoint": {
+          "method": "POST",
+          "url": "https://n8n.asonapaq.org/webhook/v1/compliance/habeas-data-purge",
+          "headers": {
+            "Content-Type": "application/json",
+            "X-Audit-Reason": "LEY_81_2019_PANAMA_DERECHO_CANCELACION"
+          },
+          "payload_template": {
+            "event_type": "HABEAS_DATA_PURGE_REQUEST",
+            "cedula_paciente": "{{active_patient_cedula}}",
+            "nombre_paciente": "{{active_patient_nombre}}",
+            "motivo_declarado": "Revocación expresa de consentimiento de datos médicos",
+            "timestamp": "{{CURRENT_ISO_TIMESTAMP}}",
+            "digital_signature_hash": "{{CLIENT_SECURE_HASH}}"
+          },
+          "expected_n8n_workflow": [
+            "1. Registrar auditoría legal inmutable de la solicitud de purga",
+            "2. Anonimizar o eliminar el historial clínico del paciente en el sistema central",
+            "3. Emitir constancia digital certificada de cancelación de datos",
+            "4. Notificar a la Junta Directiva y Asesoría Legal de ASONAPAQ",
+            "5. Enviar constancia de eliminación al correo del solicitante"
+          ]
+        }
+      },
+      {
+        "event_id": "EVT_POSTULACION_VOLUNTARIO",
+        "display_name": "Enviar Postulación de Voluntario",
+        "source_ui_element": "#panel-postulacion form button[type='submit']",
+        "route_context": "portal_voluntarios",
+        "description": "Un ciudadano panameño se inscribe para ser voluntario de ASONAPAQ y formar parte de los Chalecos Verdes.",
+        "webhook_endpoint": {
+          "method": "POST",
+          "url": "https://n8n.asonapaq.org/webhook/v1/voluntarios/nueva-postulacion",
+          "headers": {
+            "Content-Type": "application/json",
+            "X-Target-Team": "COORDINACION_VOLUNTARIADO"
+          },
+          "payload_template": {
+            "postulante_id": "{{GENERATE_UUID_V4}}",
+            "nombre_completo": "{{input_nombre_postulante}}",
+            "cedula": "{{input_cedula_postulante}}",
+            "telefono_whatsapp": "{{input_telefono_postulante}}",
+            "profesion_oficio": "{{input_profesion_postulante}}",
+            "motivacion": "{{textarea_motivacion}}",
+            "compromiso_taller_bioseguridad": true,
+            "created_at": "{{CURRENT_ISO_TIMESTAMP}}"
+          },
+          "expected_n8n_workflow": [
+            "1. Validar número de WhatsApp panameño (+507)",
+            "2. Crear candidato en CRM de Voluntariado ASONAPAQ",
+            "3. Disparar mensaje interactivo de WhatsApp con temario del Taller de Bioseguridad en ION",
+            "4. Notificar al Coordinador de Chalecos Verdes para entrevista virtual"
+          ]
+        }
+      },
+      {
+        "event_id": "EVT_CHECKIN_HOSPITAL_ION",
+        "display_name": "Registrar Llegada a Guardia ION",
+        "source_ui_element": "#panel-perfil button:has-text('Registrar Llegada')",
+        "route_context": "portal_voluntarios",
+        "description": "El voluntario activo marca su entrada al Instituto Oncológico Nacional para iniciar la ronda de acompañamiento.",
+        "webhook_endpoint": {
+          "method": "POST",
+          "url": "https://n8n.asonapaq.org/webhook/v1/voluntarios/checkin-hospital",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "payload_template": {
+            "volunteer_id": "VN-089",
+            "volunteer_name": "Carmen Elena Morales",
+            "hospital_zone": "SALA_QUIMIOTERAPIA_AMBULATORIA_ION",
+            "checkin_time": "{{CURRENT_ISO_TIMESTAMP}}",
+            "geo_coordinates": {
+              "lat": 8.9567,
+              "lng": -79.5532,
+              "venue": "Instituto Oncológico Nacional Dr. Juan Demóstenes Arosemena, Ancón"
+            }
+          },
+          "expected_n8n_workflow": [
+            "1. Validar credencial activa de voluntario #VN-089",
+            "2. Registrar entrada en bitácora de guardias de acompañamiento",
+            "3. Sumar 4 horas estimadas al contador mensual del voluntario",
+            "4. Actualizar el Panel de Administración de ASONAPAQ en tiempo real"
+          ]
+        }
+      },
+      {
+        "event_id": "EVT_DESCARGA_GUIA_NUTRICIONAL",
+        "display_name": "Descargar Guía Clínica Nutricional",
+        "source_ui_element": "#portal-pacientes button:has-text('Descargar Guía (PDF)')",
+        "route_context": "portal_pacientes",
+        "description": "El usuario descarga el manual clínico de nutrición oncológica y recetas reconfortantes.",
+        "webhook_endpoint": {
+          "method": "POST",
+          "url": "https://n8n.asonapaq.org/webhook/v1/analytics/descarga-recursos",
+          "headers": { "Content-Type": "application/json" },
+          "payload_template": {
+            "resource_id": "GUIA_NUTRICIONAL_QUIMIOTERAPIA_PDF",
+            "resource_title": "Nutrición en Quimioterapia - ASONAPAQ Panamá",
+            "timestamp": "{{CURRENT_ISO_TIMESTAMP}}"
+          }
+        }
+      },
+      {
+        "event_id": "EVT_LLAMADA_CENTRAL_ION",
+        "display_name": "Llamada Directa Central ION 512-7000",
+        "source_ui_element": "#portal-pacientes a[href='tel:512-7000']",
+        "route_context": "portal_pacientes",
+        "description": "El usuario activa el enlace de emergencia médica al ION ante fiebre neutropénica o complicaciones.",
+        "webhook_endpoint": {
+          "method": "POST",
+          "url": "https://n8n.asonapaq.org/webhook/v1/telemedicina/urgencia-telefonia",
+          "headers": { "Content-Type": "application/json" },
+          "payload_template": {
+            "call_type": "EMERGENCIA_ION_DIRECTA",
+            "destination_number": "512-7000",
+            "timestamp": "{{CURRENT_ISO_TIMESTAMP}}"
+          }
+        }
+      },
+      {
+        "event_id": "EVT_PUBLICAR_TESTIMONIO_MURO",
+        "display_name": "Publicar en el Muro de la Fundación",
+        "source_ui_element": "#compose-modal #publish-btn",
+        "route_context": "muro_comunicaciones",
+        "description": "Un paciente o voluntario comparte un mensaje de esperanza o testimonio que entra a moderación pastoral.",
+        "webhook_endpoint": {
+          "method": "POST",
+          "url": "https://n8n.asonapaq.org/webhook/v1/comunidad/nuevo-testimonio",
+          "headers": { "Content-Type": "application/json" },
+          "payload_template": {
+            "author": "{{active_user_name_or_anonymous}}",
+            "content": "{{textarea_testimonio}}",
+            "timestamp": "{{CURRENT_ISO_TIMESTAMP}}",
+            "moderation_status": "PENDING_REVIEW"
+          },
+          "expected_n8n_workflow": [
+            "1. Enviar texto a revisión de seguridad con Gemini Flash API",
+            "2. Si es seguro, alertar en canal de Telegram/Discord del Comité de Esperanza",
+            "3. Al aprobarse, publicar dinámicamente en el feed público"
+          ]
+        }
+      },
+      {
+        "event_id": "EVT_ACTUALIZAR_DISPONIBILIDAD_VOLUNTARIO",
+        "display_name": "Actualizar Disponibilidad Semanal",
+        "source_ui_element": "#panel-disponibilidad button:has-text('Actualizar Mi Disponibilidad')",
+        "route_context": "portal_voluntarios",
+        "description": "El voluntario modifica sus días (Lunes a Sábado), turnos (Matutino/Vespertino) y zonas en Panamá.",
+        "webhook_endpoint": {
+          "method": "POST",
+          "url": "https://n8n.asonapaq.org/webhook/v1/voluntarios/actualizar-turnos",
+          "headers": { "Content-Type": "application/json" },
+          "payload_template": {
+            "volunteer_id": "VN-089",
+            "dias_activos": "{{selected_days_array}}",
+            "franjas_horarias": "{{selected_shifts_array}}",
+            "zonas_habilitadas": "{{selected_zones_array}}",
+            "updated_at": "{{CURRENT_ISO_TIMESTAMP}}"
+          }
+        }
+      },
+      {
+        "event_id": "EVT_AUDITORIA_DESCARGAR_BALANCE",
+        "display_name": "Descargar Informe de Auditoría Social 2025",
+        "source_ui_element": "#auditoria-social button:has-text('Descargar Informe')",
+        "route_context": "auditoria_social",
+        "description": "Se genera y descarga el desglose certificado de 342 apoyos directos en 2025.",
+        "webhook_endpoint": {
+          "method": "POST",
+          "url": "https://n8n.asonapaq.org/webhook/v1/auditoria/generar-reporte-fiscal",
+          "headers": { "Content-Type": "application/json" },
+          "payload_template": {
+            "period": "2025-Q1",
+            "fiscal_seal": "PANAMA_ASONAPAQ_CERT_1989",
+            "requested_at": "{{CURRENT_ISO_TIMESTAMP}}"
+          }
+        }
+      }
+    ]
+  },
+  "antigravity_agent_execution_guide": {
+    "target_agent": "Antigravity 2.0 Autonomous Engineering Engine",
+    "architecture_paradigm": "Data-Driven Declarative Navigation with Webhook Decoupling",
+    "implementation_steps": [
+      "1. Parse 'routing_architecture.routes' to dynamically construct App Router or Client Router paths and active navigation links.",
+      "2. Initialize persistent state keys specified in 'state_management.stores' using safe local storage fallbacks.",
+      "3. Bind every button and form submission identified in 'events_and_triggers_catalog.triggers' to asynchronous handlers that invoke the corresponding n8n webhook URL.",
+      "4. Implement an in-memory or background offline queue: if the n8n endpoint is unreachable, enqueue payloads and retry using exponential backoff.",
+      "5. Enforce privacy compliance (Ley 81 de Panamá) in all data operations, ensuring clinical confidentiality and automated purge flows."
+    ]
+  }
+}

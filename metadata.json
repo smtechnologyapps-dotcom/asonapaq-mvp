@@ -1,0 +1,6 @@
+{
+  "name": "ASONAPAQ - Asociación Nacional de Pacientes de Quimioterapia",
+  "description": "Plataforma integral y centro de apoyo de la Fundación ASONAPAQ (Panamá, desde 1989): Portal de Pacientes, Portal de Voluntarios, Muro de Esperanza, Panel de Administración, Auditoría Social y Junta Técnica.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
