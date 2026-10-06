@@ -13,7 +13,8 @@ import {
   Map,
   Users,
   Activity,
-  HeartHandshake
+  HeartHandshake,
+  X
 } from 'lucide-react';
 
 import {
