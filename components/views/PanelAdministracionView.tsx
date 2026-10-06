@@ -258,7 +258,7 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
                       paddingAngle={4}
                       dataKey="count"
                       stroke="none"
-                      onClick={(data) => setChartFilterApoyo(chartFilterApoyo === data.name ? 'Todos' : data.name)}
+                      onClick={(data) => setChartFilterApoyo(chartFilterApoyo === data.name ? 'Todos' : (data.name || 'Todos'))}
                       className="cursor-pointer focus:outline-none"
                     >
                       {chartData.apoyos.map((entry, index) => (
@@ -312,7 +312,7 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
                       fill="url(#barGrad)" 
                       radius={[8, 8, 0, 0]} 
                       barSize={40}
-                      onClick={(data) => setChartFilterRegion(chartFilterRegion === data.name ? 'Todas' : data.name)}
+                      onClick={(data) => setChartFilterRegion(chartFilterRegion === data.name ? 'Todas' : (data.name || 'Todas'))}
                       className="cursor-pointer hover:opacity-80 transition-opacity"
                     >
                       {chartData.regiones.map((entry, index) => (
