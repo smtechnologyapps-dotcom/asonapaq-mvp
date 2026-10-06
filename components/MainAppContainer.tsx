@@ -11,6 +11,7 @@ import { PortalPacienteView } from './views/PortalPacienteView';
 import { PortalVoluntarioView } from './views/PortalVoluntarioView';
 import { PanelAdministracionView } from './views/PanelAdministracionView';
 import { MuroComunidadView } from './views/MuroComunidadView';
+import { AuditoriaSocialView } from './views/AuditoriaSocialView';
 import { MockLogin } from './security/MockLogin';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -47,7 +48,8 @@ export const MainAppContainer: React.FC<MainAppContainerProps> = ({
     'portal_pacientes',
     'muro_comunicaciones',
     'portal_voluntarios',
-    'panel_administracion'
+    'panel_administracion',
+    'auditoria_social'
   ];
 
   const direction = routeOrder.indexOf(currentRoute) >= routeOrder.indexOf(previousRoute) ? 1 : -1;
@@ -67,7 +69,7 @@ export const MainAppContainer: React.FC<MainAppContainerProps> = ({
     }
     if (route === 'panel_administracion') {
       if (isAuthenticatedAs === 'admin') {
-        return <PanelAdministracionView />;
+        return <PanelAdministracionView patients={patients} />;
       }
       return <MockLogin targetRole="admin" onSuccess={() => setIsAuthenticatedAs('admin')} />;
     }
@@ -79,8 +81,6 @@ export const MainAppContainer: React.FC<MainAppContainerProps> = ({
       <Header
         currentRoute={currentRoute}
         onRouteChange={handleRouteChange}
-        onOpenAntigravityHUD={() => {}}
-        onOpenGoogleSheets={() => {}}
         isAuthenticatedAs={isAuthenticatedAs}
         onLogout={() => { setIsAuthenticatedAs(null); handleRouteChange('inicio_publica'); }}
       />
@@ -89,6 +89,7 @@ export const MainAppContainer: React.FC<MainAppContainerProps> = ({
           <motion.div key={currentRoute} className="w-full">
             {currentRoute === 'inicio_publica' && <InicioPublicaView onRouteChange={handleRouteChange} />}
             {currentRoute === 'muro_comunicaciones' && <MuroComunidadView posts={posts} onUpdatePosts={handleUpdatePosts} />}
+            {currentRoute === 'auditoria_social' && <AuditoriaSocialView onRouteChange={handleRouteChange} />}
             {['portal_pacientes', 'portal_voluntarios', 'panel_administracion'].includes(currentRoute) && renderProtectedRoute(currentRoute)}
           </motion.div>
         </AnimatePresence>

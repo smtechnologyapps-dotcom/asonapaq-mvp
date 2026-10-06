@@ -90,7 +90,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
       icon: Handshake,
 
-      desc: 'Organiza tus turnos de acompañamiento y brigadas en el ION'
+      desc: 'Organiza tus turnos de acompañamiento y brigadías en el ION'
 
     },
 
@@ -122,7 +122,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
           <img
 
-            src="httpúblic/AB6AXuBa4LLcvBszjcVDBKQYKIxyXssSjte7fEBng9Idk4eT80eo6875orN3egg7ZqtsrP65ozIy-bOowYA8o3lOmN6c4dLWGfkhm-o3KoX2nwDXfEnor6lbpvnmwkHXokU47l6rPHWlTPonyRHhLy8EgCKkJi11yqcUwEsZdt9BPVPmiaCF8VuEVNEA5z1CjO0I9pyJqUzQE0BFRdAHqhiEnW1WhsBIlJCkJgqAgjfybOjzWYdar0yvO155BQ"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa4LLcvBszjcVDBKQYKIxyXssSjte7fEBng9Idk4eT80eo6875orN3egg7ZqtsrP65ozIy-bOowYA8o3lOmN6c4dLWGfkhm-o3KoX2nwDXfEnor6lbpvnmwkHXokU47l6rPHWlTPonyRHhLy8EgCKkJi11yqcUwEsZdt9BPVPmiaCF8VuEVNEA5z1CjO0I9pyJqUzQE0BFRdAHqhiEnW1WhsBIlJCkJgqAgjfybOjzWYdar0yvO155BQ"
 
             alt="Voluntaria de ASONAPAQ acompañando con empatía a paciente en quimioterapia"
 
@@ -142,7 +142,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
             <span className="text-xs text-slate-900 font-bold tracking-wide">
 
-              Panamá¡ Ã‚Â· Desde 1989
+              Panamáá · Desde 1989
 
             </span>
 
@@ -156,7 +156,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/25 border border-emerald-400/40 backdrop-blur-sm">
 
-              <span className="material-symás-outlined text-[15px] text-emerald-300" style={{ fontVariationSettings: "'FILL' 1" }}>
+              <span className="material-symbols-outlined text-[15px] text-emerald-300" style={{ fontVariationSettings: "'FILL' 1" }}>
 
                 volunteer_activism
 
@@ -164,7 +164,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
               <span className="text-[11px] text-emerald-200 font-bold uppercase tracking-wider">
 
-                Fe Ã‚Â· Esperanza Ã‚Â· Vida
+                Fe · Esperanza · Vida
 
               </span>
 
@@ -196,7 +196,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
             </strong>
 
-            . Un espública de Panamá¡.
+            . En la República de Panamáá.
 
           </p>
 
@@ -302,7 +302,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
             <PhoneCall className="w-4 h-4 text-rose-600 animate-pulse" />
 
-            <span>OrientaciÃƒÂ³n Inmedía Ã‚Â· (507) 6509-1352</span>
+            <span>Orientación Inmediata · (507) 6509-1352</span>
 
           </a>
 
@@ -324,7 +324,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
           </div>
 
-          <span className="text-2xl sm:text-3xl font-bold text-slate-900">+35 AÃƒÂ±os</span>
+          <span className="text-2xl sm:text-3xl font-bold text-slate-900">+35 Años</span>
 
           <span className="text-xs text-slate-500 leading-tight mt-0.5">
 
@@ -348,7 +348,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
           <span className="text-xs text-slate-500 leading-tight mt-0.5">
 
-            Familias panameÃƒÂ±as acogidas
+            Familias panameñas acogidías
 
           </span>
 
@@ -404,11 +404,11 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
             <div className="min-w-0 flex-1">
 
-              <h3 className="text-sm font-bold text-slate-900">Insumás MÃƒÂ©dicos</h3>
+              <h3 className="text-sm font-bold text-slate-900">Insumos Médicos</h3>
 
               <p className="text-xs text-slate-600 mt-0.5 leading-snug">
 
-                Kits de protección, apÃƒÂ³sitos oncológicos, catéteres Port-a-Cath y médicaciÃƒÂ³n complementaria de apoyo asistencial.
+                Kits de protección, apósitos oncológicos, catéteres Port-a-Cath y médicación complementaria de apoyo asistencial.
 
               </p>
 
@@ -430,11 +430,11 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
             <div className="min-w-0 flex-1">
 
-              <h3 className="text-sm font-bold text-slate-900">ContenciÃƒÂ³n Emocional</h3>
+              <h3 className="text-sm font-bold text-slate-900">Contención Emocional</h3>
 
               <p className="text-xs text-slate-600 mt-0.5 leading-snug">
 
-                CÃƒÂ­rculos de escucha activa, psicoterapia grupal y acompañamiento pastoral respetuoso en momentos crÃƒÂ­ticos.
+                Círculos de escucha activa, psicoterapia grupal y acompañamiento pastoral respetuoso en momentos críticos.
 
               </p>
 
@@ -456,11 +456,11 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
             <div className="min-w-0 flex-1">
 
-              <h3 className="text-sm font-bold text-slate-900">NutriciÃƒÂ³n Especializada</h3>
+              <h3 className="text-sm font-bold text-slate-900">Nutrición Especializada</h3>
 
               <p className="text-xs text-slate-600 mt-0.5 leading-snug">
 
-                Suplementos hipercalÃƒÂ³ricos y asesoría dietaria para mitigar los efectos adversos durante la quimioterapia.
+                Suplementos hipercalóricos y asesoría dietaria para mitigar los efectos adversos durante la quimioterapia.
 
               </p>
 
@@ -486,7 +486,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
               <p className="text-xs text-slate-600 mt-0.5 leading-snug">
 
-                Hospedaje transitorio digno y transporte solidario para pacientes procedentes del interior del paÃƒÂ­s.
+                Hospedaje transitorio digno y transporte solidario para pacientes procedentes del interior del país.
 
               </p>
 
@@ -500,7 +500,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
 
 
-      {/* MisiÃƒÂ³n & VisiÃƒÂ³n */}
+      {/* Misión & Visión */}
 
       <section className="space-y-3">
 
@@ -512,13 +512,13 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
             <Flag className="w-5 h-5" />
 
-            <h3 className="text-sm font-bold text-slate-900">Nuestra MisiÃƒÂ³n</h3>
+            <h3 className="text-sm font-bold text-slate-900">Nuestra Misión</h3>
 
           </div>
 
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed pl-1">
 
-            Brindar acompañamiento humano, soporte integral y asistencia directa con insumos y calidía cada paciente en tratamiento de quimioterapia y a sus seres queridos en Panamá¡.
+            Brindar acompañamiento humano, soporte integral y asistencia directa con insumos y calidad ad ad a cada paciente en tratamiento de quimioterapia y a sus seres queridos en Panamáá.
 
           </p>
 
@@ -534,13 +534,13 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
             <Eye className="w-5 h-5" />
 
-            <h3 className="text-sm font-bold text-slate-900">Nuestra VisiÃƒÂ³n</h3>
+            <h3 className="text-sm font-bold text-slate-900">Nuestra Visión</h3>
 
           </div>
 
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed pl-1">
 
-            Ser el faro de esperanza, dignidad y solidaridad oncológica comunitaria en Panamá¡ desde 1989, garantizando que ningÃƒÂºn paciente enfrente la quimioterapia en soledad.
+            Ser el faro de esperanza, dignidad y solidaridad oncológica comunitaria en Panamáá desde 1989, garantizando que ningún paciente enfrente la quimioterapia en soledad.
 
           </p>
 
@@ -558,7 +558,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800">
 
-              Valores Que Nos GuÃƒÂ­an
+              Valores Que Nos Guían
 
             </h4>
 
@@ -570,7 +570,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
               'Solidaridad Activa',
 
-              'EmpatÃƒÂ­a Humana',
+              'Empatía Humana',
 
               'Esperanza Resiliente',
 
@@ -618,7 +618,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
           <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
 
-            &ldquo;Cada pública de Panamá¡.&rdquo;
+            &ldquo;Cada paciente es abrazado con empatía, cuidado y respeto en su proceso.&rdquo;
 
           </p>
 
@@ -628,13 +628,13 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
 
 
-      {/* Instécnica */}
+      {/* Institucional */}
 
       <section className="pt-2 flex items-center justify-between gap-2 text-xs">
 
         <button
 
-          onClick={() => onRouteChange('auditoría_social')}
+          onClick={() => onRouteChange('auditoria_social')}
 
           className="flex-1 py-3 px-3 rounded-2xl bg-white border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 text-slate-700 font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-xs"
 
@@ -656,7 +656,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
           <Stethoscope className="w-4 h-4 text-teal-700" />
 
-          <span>Juntécnica ION</span>
+          <span>Junta Técnica ION</span>
 
         </button>
 

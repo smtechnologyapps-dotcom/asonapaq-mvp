@@ -62,7 +62,7 @@ interface PortalPacienteViewProps {
 
   onAddPatientRecord: (patient: PatientRecord) => void;
 
-  onPurgePatientdía: (cedía: string) => void;
+  onPurgePatientData: (cedula: string) => void;
 
 }
 
@@ -72,7 +72,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
   onAddPatientRecord,
 
-  onPurgePatientdía
+  onPurgePatientData
 
 }) => {
 
@@ -82,7 +82,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
   const [nombre, setNombre] = useState('');
 
-  const [cedía, setCedía] = useState('');
+  const [cedula, setCédula] = useState('');
 
   const [hospital, setHospital] = useState('');
 
@@ -112,7 +112,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
     e.preventDefault();
 
-    if (!nombre || !cedía || !hospital || !detalle) return;
+    if (!nombre || !cedula || !hospital || !detalle) return;
 
 
 
@@ -132,23 +132,23 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
       nombre,
 
-      cedía,
+      cedula,
 
       diagnostico:
 
         tipoRequerimiento === 'insumos_oncológicos'
 
-          ? 'quimioterapia Ambulatoria (Insumás)'
+          ? 'Quimioterapia Ambulatoria (Insumos)'
 
           : tipoRequerimiento === 'suplementacion_nutricional'
 
-          ? 'Soporte Nutricional OncolÃƒÂ³gico'
+          ? 'Soporte Nutricional Oncológico'
 
           : tipoRequerimiento === 'alojamiento_temporal'
 
-          ? 'Alojamiento ForÃƒÂ¡neo ION'
+          ? 'Alojamiento Foráneo ION'
 
-          : 'ContenciÃƒÂ³n Emocional Activa',
+          : 'Contención Emocional Activa',
 
       hospital,
 
@@ -156,27 +156,27 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
         tipoRequerimiento === 'insumos_oncológicos'
 
-          ? 'Insumás OncolÃƒÂ³gicos'
+          ? 'Insumos Oncológicos'
 
           : tipoRequerimiento === 'suplementacion_nutricional'
 
-          ? 'SuplementaciÃƒÂ³n Nutricional'
+          ? 'Suplementación Nutricional'
 
           : tipoRequerimiento === 'alojamiento_temporal'
 
           ? 'Alojamiento Temporal'
 
-          : 'Apoyo PsicolÃƒÂ³gico',
+          : 'Apoyo Psicológico',
 
-      region: hospital.includes('ChiriquÃƒÂ­')
+      region: hospital.includes('Chiriquíí')
 
-        ? 'ChiriquÃƒÂ­'
+        ? 'Chiriquíí'
 
         : hospital.includes('Solano')
 
-        ? 'Panamá¡ Oeste'
+        ? 'Panamáá Oeste'
 
-        : 'Panamá¡ Centro',
+        : 'Panamáá Centro',
 
       estado: 'En Tratamiento ION',
 
@@ -198,7 +198,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
       nombre_paciente: nombre,
 
-      cedula_paciente: cedía,
+      cedula_paciente: cedula,
 
       hospital_paciente: hospital,
 
@@ -254,7 +254,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
     setNombre('');
 
-    setCedía('');
+    setCédula('');
 
     setHospital('');
 
@@ -272,15 +272,15 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
       'EVT_HABEAS_DATA_ELIMINACION',
 
-      'Confirmar EliminaciÃƒÂ³n Definitiva (Ley 81 de Panamá¡)',
+      'Confirmar Eliminación Definitiva (Ley 81 de Panamáá)',
 
       {
 
         action: 'HABEAS_DATA_PURGE',
 
-        solicitante_cedía: cedía || '8-765-4321',
+        solicitante_cedula: cedula || '8-765-4321',
 
-        legal_basis: 'Ley 81 de 2019 día República de Panamá¡ sobre ProtecciÃƒÂ³n de Datos Personales',
+        legal_basis: 'Ley 81 de 2019 día República de Panamáá sobre Protección de Datos Personales',
 
         requested_at: new Date().toISOString()
 
@@ -290,9 +290,9 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
 
 
-    if (cedía) {
+    if (cedula) {
 
-      onPurgePatientdía(cedía);
+      onPurgePatientData(cedula);
 
     }
 
@@ -314,11 +314,11 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
       'EVT_DESCARGA_GUIA_NUTRICIONAL',
 
-      'Descargar GuÃƒÂ­a ClÃƒÂ­nica Nutricional (PDF)',
+      'Descargar Guía Clínica Nutricional (PDF)',
 
       {
 
-        resource: 'GUIA_NUTRICION_quimioterapia_ASONAPAQ',
+        resource: 'GUIA_NUTRICION_Quimioterapia_ASONAPAQ',
 
         format: 'PDF',
 
@@ -346,7 +346,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
           <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-800 px-3 py-1 rounded-full border border-emerald-200/60">
 
-            <AsonapaqLogo size="xs" />
+            <AsonapaqLogo size="sm" />
 
             <span className="text-xs font-bold tracking-wide">
 
@@ -388,7 +388,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
 
 
-      {/* 1. SecciÃƒÂ³n de Emergencia MÃƒÂ©día OncolÃƒÂ³gica - ION */}
+      {/* 1. Sección de Emergencia Médía Oncológica - ION */}
 
       <section
 
@@ -412,19 +412,19 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
               <span className="text-[11px] text-rose-700 font-bold uppercase tracking-wider block">
 
-                AtenciÃƒÂ³n MÃƒÂ©día Inmedía
+                Atención Médía Inmedía
 
               </span>
 
               <h2 className="text-base sm:text-lg font-bold text-slate-900 mt-0.5" id="emergencia-heading">
 
-                Central TelefÃƒÂ³nica Ã¢â‚¬â€ ION
+                Central Telefónica Ã¢â‚¬â€ ION
 
               </h2>
 
               <p className="text-xs text-slate-700 mt-1 leading-snug">
 
-                Instituto OncolÃƒÂ³gico Nacional Dr. Juan DemÃƒÂ³stenes Arosemena. OrientaciÃƒÂ³n ante fiebre post-quimioterapia, neutropenia o complicaciones agudas.
+                Instituto Oncológico Nacional Dr. Juan Demóstenes Arosemena. Orientación ante fiebre post-Quimioterapia, neutropenia o complicaciones agudías.
 
               </p>
 
@@ -442,7 +442,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
             <p className="text-xs text-slate-800 font-medium">
 
-              Urgencias: 24 horas continuas, los 365 dÃƒÂ­as del aÃƒÂ±o.
+              Urgencias: 24 horas continuas, los 365 días del año.
 
             </p>
 
@@ -492,7 +492,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
         <div className="grid grid-cols-1 gap-3.5">
 
-          {/* Tarjeta NutriciÃƒÂ³n */}
+          {/* Tarjeta Nutrición */}
 
           <div className="bg-white p-4 sm:p-5 rounded-3xl shadow-sm border border-slate-100 flex flex-col justify-between space-y-3">
 
@@ -508,19 +508,19 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
                 <span className="inline-block bg-teal-100 text-teal-800 text-[10px] px-2.5 py-0.5 rounded-full font-bold">
 
-                  GuÃƒÂ­a ClÃƒÂ­nica Nutricional
+                  Guía Clínica Nutricional
 
                 </span>
 
                 <h3 className="text-base font-bold text-slate-900 leading-tight">
 
-                  NutriciÃƒÂ³n en quimioterapia
+                  Nutrición en Quimioterapia
 
                 </h3>
 
                 <p className="text-xs text-slate-600 leading-relaxed">
 
-                  Consejos prÃƒÂ¡cticos para mitigar nÃƒÂ¡useas, combatir la pÃƒÂ©rdía del apetito y recetas reconfortantes diseÃƒÂ±adas por especialistas oncológicos de Panamá¡.
+                  Consejos prácticos para mitigar náuseas, combatir la pérdía del apetito y recetas reconfortantes diseñadías por especialistas oncológicos de Panamáá.
 
                 </p>
 
@@ -542,7 +542,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
               <Download className="w-4 h-4 text-emerald-700" />
 
-              <span>Descargar GuÃƒÂ­a (PDF)</span>
+              <span>Descargar Guía (PDF)</span>
 
             </button>
 
@@ -550,7 +550,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
 
 
-          {/* Tarjeta Banco de Insumás */}
+          {/* Tarjeta Banco de Insumos */}
 
           <div className="bg-white p-4 sm:p-5 rounded-3xl shadow-sm border border-slate-100 flex flex-col justify-between space-y-3">
 
@@ -572,13 +572,13 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
                 <h3 className="text-base font-bold text-slate-900 leading-tight">
 
-                  Banco de Insumás OncolÃƒÂ³gicos
+                  Banco de Insumos Oncológicos
 
                 </h3>
 
                 <p className="text-xs text-slate-600 leading-relaxed">
 
-                  Disponibilidad solidía de agujas Huber, catéteres Port-a-Cath, cremás dermoprotectoras para radioterapia y kits de aseo estÃƒÂ©ril.
+                  Disponibilidad solidía de agujas Huber, catéteres Port-a-Cath, cremás dermoprotectoras para radioterapia y kits de aseo estéril.
 
                 </p>
 
@@ -624,11 +624,11 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
           <div className="inline-flex items-center gap-1.5 text-emerald-700">
 
-            <AsonapaqLogo size="xs" />
+            <AsonapaqLogo size="sm" />
 
             <span className="text-[11px] font-bold uppercase tracking-wider">
 
-              AcompaÃƒÂ±amiento Activo Oficial
+              Acompañamiento Activo Oficial
 
             </span>
 
@@ -642,7 +642,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
           <p className="text-xs text-slate-600">
 
-            Completa este formulario oficial para canalizar tu requerimiento con nuestro comitÃƒÂ© de apoyo social en Panamá¡.
+            Completa este formulario oficial para canalizar tu requerimiento con nuestro comité de apoyo social en Panamáá.
 
           </p>
 
@@ -666,9 +666,9 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
               {[
 
-                { id: 'insumos_oncológicos', label: 'Insumás OncolÃƒÂ³gicos (Agujas Huber / Port-a-Cath)', icon: Syringe },
+                { id: 'insumos_oncológicos', label: 'Insumos Oncológicos (Agujas Huber / Port-a-Cath)', icon: Syringe },
 
-                { id: 'apoyo_psicologico', label: 'Apoyo PsicolÃƒÂ³gico y TanatologÃƒÂ­a', icon: Brain },
+                { id: 'apoyo_psicologico', label: 'Apoyo Psicológico y Tanatología', icon: Brain },
 
                 { id: 'suplementacion_nutrición Nutricional Especializada', icon: Utensils },
 
@@ -744,7 +744,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
               onChange={(e) => setNombre(e.target.value)}
 
-              placeholder="Ej. MarÃƒÂ­a Antonia Castillo"
+              placeholder="Ej. María Antonia Castillo"
 
               className="w-full h-12 px-4 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 text-sm focus:outline-none focus:border-emerald-600 focus:bg-white transition-all shadow-inner"
 
@@ -754,27 +754,27 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
 
 
-          {/* CÃƒÂ©día */}
+          {/* Cédula */}
 
           <div className="space-y-1">
 
-            <label className="block text-xs font-bold text-slate-800" htmlFor="cedía-input">
+            <label className="block text-xs font-bold text-slate-800" htmlFor="cedula-input">
 
-              CÃƒÂ©día de identidad personal o pasaporte <span className="text-rose-600">*</span>
+              Cédula de identidad personal o pasaporte <span className="text-rose-600">*</span>
 
             </label>
 
             <input
 
-              id="cedía-input"
+              id="cedula-input"
 
               type="text"
 
               required
 
-              value={cedía}
+              value={cedula}
 
-              onChange={(e) => setCedía(e.target.value)}
+              onChange={(e) => setCédula(e.target.value)}
 
               placeholder="Ej. 8-765-4321 o PE-123-456"
 
@@ -792,7 +792,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
             <label className="block text-xs font-bold text-slate-800" htmlFor="hospital-select">
 
-              Hospital o Centro OncolÃƒÂ³gico de atenciÃƒÂ³n <span className="text-rose-600">*</span>
+              Hospital o Centro Oncológico de atención <span className="text-rose-600">*</span>
 
             </label>
 
@@ -816,9 +816,9 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
               </option>
 
-              <option value="Instituto OncolÃƒÂ³gico Nacional (ION)">
+              <option value="Instituto Oncológico Nacional (ION)">
 
-                Instituto OncolÃƒÂ³gico Nacional (ION - AncÃƒÂ³n)
+                Instituto Oncológico Nacional (ION - Ancón)
 
               </option>
 
@@ -828,21 +828,21 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
               </option>
 
-              <option value="Ciudad día Salud / PediatrÃƒÂ­a">
+              <option value="Ciudad día Salud / Pediatría">
 
-                Ciudad día Salud / Hospital de Especialidades PediÃƒÂ¡tricas
-
-              </option>
-
-              <option value="Hospital Regional Dr. Rafael HernÃƒÂ¡ndez (ChiriquÃƒÂ­)">
-
-                Hospital Regional Dr. Rafael HernÃƒÂ¡ndez (David, ChiriquÃƒÂ­)
+                Ciudad día Salud / Hospital de Especialidades Pediátricas
 
               </option>
 
-              <option value="Hospital NicolÃƒÂ¡s A. Solano (La Chorrera)">
+              <option value="Hospital Regional Dr. Rafael Hernández (Chiriquíí)">
 
-                Hospital NicolÃƒÂ¡s A. Solano (Panamá¡ Oeste)
+                Hospital Regional Dr. Rafael Hernández (David, Chiriquíí)
+
+              </option>
+
+              <option value="Hospital Nicolás A. Solano (La Chorrera)">
+
+                Hospital Nicolás A. Solano (Panamáá Oeste)
 
               </option>
 
@@ -864,7 +864,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
             <label className="block text-xs font-bold text-slate-800" htmlFor="detalle-textarea">
 
-              Detalle día solicitud mÃƒÂ©día y situaciÃƒÂ³n actual <span className="text-rose-600">*</span>
+              Detalle día solicitud médía y situación actual <span className="text-rose-600">*</span>
 
             </label>
 
@@ -896,11 +896,11 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
             <label className="block text-xs font-bold text-slate-800">
 
-              Adjuntar receta o indicaciÃƒÂ³n mÃƒÂ©día (Foto o PDF) <span className="text-rose-600">*</span>
+              Adjuntar receta o indicación médía (Foto o PDF) <span className="text-rose-600">*</span>
 
             </label>
 
-            <div className="p-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center text-center space-y-2 hover:bg-slate-100/70 transition-colors cursor-pointer relative">
+            <div className="p-4 bg-slate-50 border-2 border-díashed border-slate-200 rounded-2xl flex flex-col items-center justify-center text-center space-y-2 hover:bg-slate-100/70 transition-colors cursor-pointer relative">
 
               <input
 
@@ -932,7 +932,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
                 <p className="text-xs font-bold text-slate-800">
 
-                  {fileName ? fileName : 'Subir documento o fotografÃƒÂ­a de receta'}
+                  {fileName ? fileName : 'Subir documento o fotografía de receta'}
 
                 </p>
 
@@ -1024,7 +1024,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
               <p className="text-xs text-slate-700 leading-relaxed pl-7">
 
-                Tu expediente solidario ha sido recibido. El webhook de n8n ha notificado al equipo de Trabajo Social de ASONAPAQ para coordinar la entrega en Panamá¡.
+                Tu expediente solidario ha sido recibido. El webhook de n8n ha notificado al equipo de Trabajo Social de ASONAPAQ para coordinar la entrega en Panamáá.
 
               </p>
 
@@ -1056,7 +1056,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
             <p className="text-[11px] text-slate-500">
 
-              Privacidad amparada bajo la Ley 81 de ProtecciÃƒÂ³n de Datos de Panamá¡
+              Privacidad amparada bajo la Ley 81 de Protección de Datos de Panamáá
 
             </p>
 
@@ -1102,7 +1102,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
 
 
-          {/* HÃƒÂ¡beas día */}
+          {/* Hábeas día */}
 
           <button
 
@@ -1118,7 +1118,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
               <AlertTriangle className="w-4 h-4 text-rose-600 flex-shrink-0" />
 
-              <span className="truncate">Solicitar eliminaciÃƒÂ³n de más datos (HÃƒÂ¡beas día)</span>
+              <span className="truncate">Solicitar eliminación de más datos (Hábeas día)</span>
 
             </div>
 
@@ -1132,7 +1132,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
         <p className="text-[11px] text-slate-500 text-center leading-relaxed px-2">
 
-          En cumplimiento con la <strong>Ley 81 de 2019 de la República de Panamá</strong>, ASONAPAQ resguarda bajo confidencialidad mÃƒÂ©día todos los historiales y solicitudes oncológicas.
+          En cumplimiento con la <strong>Ley 81 de 2019 de la República de Panamááá</strong>, ASONAPAQ resguarda bajo confidencialidad médía todos los historiales y solicitudes oncológicas.
 
         </p>
 
@@ -1142,7 +1142,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
           <div className="p-3 bg-rose-100 text-rose-900 rounded-2xl text-xs text-center font-medium">
 
-            Ã¢Å“â€œ Su requerimiento de HÃƒÂ¡beas día ha sido tramitado formalmente ante la AsesorÃƒÂ­a Legal de ASONAPAQ.
+            Ã¢Å“â€œ Su requerimiento de Hábeas día ha sido tramitado formalmente ante la Asesoría Legal de ASONAPAQ.
 
           </div>
 
@@ -1152,7 +1152,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
 
 
-      {/* Modal HÃƒÂ¡beas día (Ley 81 de Panamá¡) */}
+      {/* Modal Hábeas día (Ley 81 de Panamáá) */}
 
       <AnimatePresence>
 
@@ -1192,7 +1192,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
                     <h3 className="text-base font-bold text-slate-900">
 
-                      Derecho de HÃƒÂ¡beas día
+                      Derecho de Hábeas día
 
                     </h3>
 
@@ -1224,13 +1224,13 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
                   Usted tiene el derecho legal, bajo la{' '}
 
-                  <strong>Ley 81 de 2019 sobre ProtecciÃƒÂ³n de Datos Personales de Panamá¡</strong>, a revocar su consentimiento y solicitar la cancelación definitiva de su registro, historial clínico y datos personales de nuestros archivos.
+                  <strong>Ley 81 de 2019 sobre Protección de Datos Personales de Panamáá</strong>, a revocar su consentimiento y solicitar la cancelación definitiva de su registro, historial clínico y datos personales de nuestros archivos.
 
                 </p>
 
                 <div className="bg-slate-100 p-3 rounded-2xl text-[11px] text-slate-700">
 
-                  Ã¢Å¡Â Ã¯Â¸Â Al proceder, se cerrarÃƒÂ¡n de forma permanente sus solicitudes activas de insumos y beneficios asistenciales de ASONAPAQ.
+                  Ã¢Å¡Â Ã¯Â¸Â Al proceder, se cerrarán de forma permanente sus solicitudes activas de insumos y beneficios asistenciales de ASONAPAQ.
 
                 </div>
 
@@ -1250,7 +1250,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
                 >
 
-                  Confirmar eliminaciÃƒÂ³n definitiva (Purga n8n)
+                  Confirmar eliminación definitiva (Purga n8n)
 
                 </button>
 
@@ -1280,7 +1280,7 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
 
 
-      {/* Modal GuÃƒÂ­a Nutricional */}
+      {/* Modal Guía Nutricional */}
 
       <AnimatePresence>
 
@@ -1310,13 +1310,13 @@ export const PortalPacienteView: React.FC<PortalPacienteViewProps> = ({
 
                 <h3 className="text-base font-bold text-slate-900">
 
-                  GuÃƒÂ­a Descargada con Ãƒâ€°xito
+                  Guía Descargada con Ãƒâ€°xito
 
                 </h3>
 
                 <p className="text-xs text-slate-600">
 
-                  El manual &ldquo;NutriciÃƒÂ³n en quimioterapia - ASONAPAQ&rdquo; ha sido enviadía tu dispositivo con recomendaciones para mitigar nÃƒÂ¡useas y recetas de Panamá¡.
+                  El manual &ldquo;Nutrición en Quimioterapia - ASONAPAQ&rdquo; ha sido enviadía tu dispositivo con recomendaciones para mitigar náuseas y recetas de Panamáá.
 
                 </p>
 

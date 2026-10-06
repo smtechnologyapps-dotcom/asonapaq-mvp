@@ -2,25 +2,21 @@
 
 import React, { useState } from 'react';
 import { AsonapaqLogo } from './AsonapaqLogo';
+import { LiveClock } from './LiveClock';
 import { AppRoute } from '../lib/types';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Bell,
   PhoneCall,
   User,
-  CheckCircle2,
-  Sparkles,
-  Shield,
-  Heart,
   ChevronDown,
-  LogOut
+  LogOut,
+  Shield
 } from 'lucide-react';
 
 interface HeaderProps {
   currentRoute: AppRoute;
   onRouteChange: (route: AppRoute) => void;
-  onOpenAntigravityHUD: () => void;
-  onOpenGoogleSheets: () => void;
   unreadCount?: number;
   isAuthenticatedAs?: 'paciente' | 'voluntario' | 'admin' | null;
   onLogout?: () => void;

@@ -1,4 +1,4 @@
-export type AppRoute =
+﻿export type AppRoute = 
   | 'inicio_publica'
   | 'portal_pacientes'
   | 'muro_comunicaciones'
@@ -8,75 +8,74 @@ export type AppRoute =
   | 'junta_tecnica';
 
 export interface PatientRecord {
-  id: number;
+  id: string | number;
   nombre: string;
   cedula: string;
+  telefono?: string;
   diagnostico: string;
   hospital: string;
   apoyo: string;
   region: string;
-  estado: 'Activo' | 'En Espera' | 'En Tratamiento ION' | 'Alta Médica';
+  estado: 'Aprobado' | 'En Revisión' | 'Rechazado' | 'Activo' | string;
   fechaRegistro: string;
-  telefono?: string;
-  observaciones?: string;
+  observaciones: string;
 }
 
 export interface VolunteerProfile {
-  id: string;
+  id: string | number;
   nombre: string;
-  credencial: string;
-  horasAcumuladas: number;
-  pacientesAcompanados: number;
-  disponible: boolean;
-  proximaGuardia: {
-    lugar: string;
-    fecha: string;
-    hora: string;
-  };
+  cedula: string;
   diasDisponibles: string[];
   turnosPreferidos: string[];
   zonasHabilitadas: string[];
+  credencial: string;
+  horasAcumuladas?: number;
+  pacientesAcompañados: number;
+  proximaGuardia: any;
+  disponible?: boolean;
 }
 
 export interface CommunityComment {
   id: string;
   autor: string;
-  iniciales: string;
+  rolAutor?: string;
+  contenido?: string;
+  mensaje?: string;
   tiempo: string;
-  mensaje: string;
+  iniciales?: string;
   colorBg?: string;
 }
 
 export interface CommunityPost {
   id: string;
-  tipo: 'oficial' | 'campana' | 'taller';
   autor: string;
-  rolAutor: string;
-  tiempo: string;
-  avatarIcon?: string;
-  avatarInitials?: string;
-  avatarColor?: string;
-  verificado: boolean;
-  titulo?: string;
+  rolAutor?: string;
   contenido: string;
+  tipo: 'Testimonio' | 'Agradecimiento' | 'Alerta' | 'Donación' | 'oficial' | 'campana' | 'taller' | string;
+  tiempo: string;
+  likes: number;
   imagenUrl?: string;
   imagenAlt?: string;
+  permitirComentarios?: boolean;
+  verificado?: boolean;
+  userLiked?: boolean;
+  avatarIcon?: any;
+  avatarInitials?: string;
+  avatarColor?: string;
   badgeTexto?: string;
-  likes: number;
-  userLiked: boolean;
-  permitirComentarios: boolean;
-  comentarios: CommunityComment[];
   soloDifusion?: boolean;
+  comentarios?: CommunityComment[];
 }
 
 export interface WebhookLogEntry {
   id: string;
-  eventId: string;
-  displayName: string;
-  url: string;
   timestamp: string;
-  status: number;
-  statusText: string;
+  event?: string;
   payload: any;
-  response: any;
+  status: 'success' | 'error' | number;
+  eventId?: string;
+  displayName?: string;
+  url?: string;
+  statusText?: string;
+  response?: any;
 }

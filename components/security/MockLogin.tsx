@@ -87,7 +87,7 @@ export const MockLogin: React.FC<MockLoginProps> = ({ targetRole, onSuccess }) =
           
           <div className="text-center pt-2">
             <p className="text-[10px] text-slate-400 leading-relaxed px-4">
-              Sus credenciales están protegidas y encriptadas conforme a la Ley 81 de Protección de Datos Personales.
+              Sus credenciales están protegidías y encriptadías conforme a la Ley 81 de Protección de Datos Personales.
             </p>
           </div>
         </form>

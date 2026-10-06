@@ -91,7 +91,7 @@ export async function readSheetValues(
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.error?.message || `Error al leer celdas de la hoja (${res.status})`);
+    throw new Error(err.error?.message || `Error al leer celdías de la hoja (${res.status})`);
   }
 
   const data = await res.json();
@@ -229,7 +229,7 @@ export async function createOfficialAsonapaqSpreadsheet(
     'Pacientes Acompañados',
     'Próxima Asignación',
     'Turnos Preferidos',
-    'Zonas Habilitadas'
+    'Zonas Habilitadías'
   ];
 
   const volunteerRow = [
@@ -237,7 +237,7 @@ export async function createOfficialAsonapaqSpreadsheet(
     volunteer.nombre,
     volunteer.credencial,
     volunteer.horasAcumuladas,
-    volunteer.pacientesAcompanados,
+    volunteer.pacientesAcompañados,
     `${volunteer.proximaGuardia.fecha} - ${volunteer.proximaGuardia.lugar}`,
     volunteer.turnosPreferidos.join(', '),
     volunteer.zonasHabilitadas.join(', ')

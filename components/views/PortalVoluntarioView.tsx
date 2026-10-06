@@ -80,7 +80,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
 
 
-  // Jornadas state
+  // Jornadías state
 
   const [jornada1Confirmed, setJornada1Confirmed] = useState(false);
 
@@ -104,7 +104,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
   const [postNombre, setPostNombre] = useState('');
 
-  const [postCedía, setPostCedía] = useState('');
+  const [postCédula, setPostCédula] = useState('');
 
   const [postTelefono, setPostTelefono] = useState('');
 
@@ -124,15 +124,15 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
     setCheckInLoading(true);
 
-    await triggerN8NWebhook('EVT_CHECKIN_HOSPITAL_ION', 'Registrar Llegadía Guardía ION', {
+    await triggerN8NWebhook('EVT_CHECKIN_HOSPITAL_ION', 'Registrar Llegadía Guíardía ION', {
 
       volunteer_id: volunteer.id,
 
       volunteer_name: volunteer.nombre,
 
-      hospital: 'Instituto OncolÃƒÂ³gico Nacional (ION)',
+      hospital: 'Instituto Oncológico Nacional (ION)',
 
-      unit: 'Sala de quimioterapia Ambulatoria',
+      unit: 'Sala de Quimioterapia Ambulatoria',
 
       checkin_time: new Date().toISOString()
 
@@ -144,7 +144,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
       ...volunteer,
 
-      horasAcumuladas: volunteer.horasAcumuladas + 4
+      horasAcumuladas: (volunteer.horasAcumuladas || 0) + 4
 
     });
 
@@ -214,11 +214,11 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
 
 
-    await triggerN8NWebhook('EVT_POSTULACION_VOLUNTARIO', 'Enviar PostulaciÃƒÂ³n de Nuevo Voluntario', {
+    await triggerN8NWebhook('EVT_POSTULACION_VOLUNTARIO', 'Enviar Postulación de Nuevo Voluntario', {
 
       nombre: postNombre,
 
-      cedía: postCedía,
+      cedula: postCédula,
 
       telefono: postTelefono,
 
@@ -264,21 +264,21 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
             <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-600/60 text-emerald-200 text-[11px] font-bold border border-emerald-500/30">
 
-              <AsonapaqLogo size="xs" />
+              <AsonapaqLogo size="sm" />
 
-              VocaciÃƒÂ³n & Esperanza
+              Vocación & Esperanza
 
             </span>
 
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white leading-tight">
 
-              más que Sanan, Corazones que GuÃƒÂ­an
+              más que Sanan, Corazones que Guían
 
             </h2>
 
             <p className="text-xs text-emerald-100/90 max-w-xs leading-relaxed">
 
-              Gracias por regalar tu tiempo y sembrar luz a quienes transitan la quimioterapia en Panamá¡.
+              Gracias por regalar tu tiempo y sembrar luz a quienes transitan la Quimioterapia en Panamáá.
 
             </p>
 
@@ -374,7 +374,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                 <img
 
-                  src="httpúblic/AB6AXuA8gAGpttLDn7AX8K6hr_ULcJoyDfaLAN6em00TQIOQ__E3xbp1MZeTWBUqjwW-gxPLJJouZnXap1tlVq9yun95Z9m1pPCWfcj9OBA-uiZK_ZTy7DzBr6W-6sHjoKke1xlLw3K2p9x8OODpxFnOf6LQHWa1Nr-id3cWennc79pOjW94o4P6fV3TidMCr2iKx4k03RRqjr5FP-tLVDfshDar6vEQiM31In8-xzbr4rPVLwJSjSlSLx_rPg"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8gAGpttLDn7AX8K6hr_ULcJoyDfaLAN6em00TQIOQ__E3xbp1MZeTWBUqjwW-gxPLJJouZnXap1tlVq9yun95Z9m1pPCWfcj9OBA-uiZK_ZTy7DzBr6W-6sHjoKke1xlLw3K2p9x8OODpxFnOf6LQHWa1Nr-id3cWennc79pOjW94o4P6fV3TidMCr2iKx4k03RRqjr5FP-tLVDfshDar6vEQiM31In8-xzbr4rPVLwJSjSlSLx_rPg"
 
                   alt="Carmen Elena Morales - Voluntaria Oficial ASONAPAQ"
 
@@ -414,13 +414,13 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                 <p className="text-xs text-slate-500 line-clamp-1">
 
-                  AcompaÃƒÂ±amiento Hospitalario & Insumás
+                  Acompañamiento Hospitalario & Insumos
 
                 </p>
 
                 <div className="inline-flex items-center gap-1 text-[11px] text-emerald-700 font-bold">
 
-                  <AsonapaqLogo size="xs" />
+                  <AsonapaqLogo size="sm" />
 
                   <span>{volunteer.credencial}</span>
 
@@ -452,7 +452,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                 <p className="text-3xl font-bold text-slate-900 leading-none pt-1">
 
-                  {volunteer.horasAcumuladas}
+                  {(volunteer.horasAcumuladas || 0)}
 
                   <span className="text-sm font-normal text-slate-500 ml-0.5">h</span>
 
@@ -472,7 +472,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                   <span className="text-[10px] bg-teal-100 text-teal-800 px-2 py-0.5 rounded-full font-bold">
 
-                    Panamá¡ Centro
+                    Panamá Centro
 
                   </span>
 
@@ -480,11 +480,11 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                 <p className="text-3xl font-bold text-slate-900 leading-none pt-1">
 
-                  {volunteer.pacientesAcompanados}
+                  {volunteer.pacientesAcompañados}
 
                 </p>
 
-                <p className="text-[11px] text-slate-500">Pacientes acompaÃƒÂ±ados</p>
+                <p className="text-[11px] text-slate-500">Pacientes acompañados</p>
 
               </div>
 
@@ -506,11 +506,11 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                 <div>
 
-                  <p className="text-xs font-bold text-slate-900">PrÃƒÂ³xima AsignaciÃƒÂ³n</p>
+                  <p className="text-xs font-bold text-slate-900">Próxima Asignación</p>
 
                   <p className="text-[11px] text-slate-600">
 
-                    {volunteer.proximaGuardía.fecha} Ã‚Â· {volunteer.proximaGuardía.lugar} ({volunteer.proximaGuardía.hora})
+                    {volunteer.proximaGuardia.fecha} · {volunteer.proximaGuardia.lugar} ({volunteer.proximaGuardia.hora})
 
                   </p>
 
@@ -562,7 +562,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
 
 
-          {/* PrÃƒÂ³ximás Jornadas */}
+          {/* Próximás Jornadías */}
 
           <div className="space-y-3">
 
@@ -570,11 +570,11 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
               <div>
 
-                <h3 className="text-base font-bold text-slate-900">PrÃƒÂ³ximás Jornadas</h3>
+                <h3 className="text-base font-bold text-slate-900">Próximás Jornadías</h3>
 
                 <p className="text-xs text-slate-500">
 
-                  Actividades grupales convocadas por ASONAPAQ
+                  Actividades grupales convocadías por ASONAPAQ
 
                 </p>
 
@@ -610,7 +610,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     <Calendar className="w-3 h-3" />
 
-                    SÃƒÂ¡bado 18 Mayo Ã‚Â· 9:30 AM
+                    Sábado 18 Mayo · 9:30 AM
 
                   </span>
 
@@ -620,9 +620,9 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                   <img
 
-                    src="httpúblic/AB6AXuA3q2e8FlzPynYp0sngcbZFHuOl7k__FVnYxDjyYhZ6gPhC9VVzlqSxQSVBmsFb6xUACD1TjZFjjM0MGoBm9s4YLhXtIsGbFYs3tHIve1xiKhJcMlHfuWaZhCwzPHUE1yNze2Jfib0rL8RD-D3q2mWJBpGOy9BrVpcgfyo-XiGz07o1qFN2aGLGRtXpjSdYM6rQUxLSPH7uxxbyzhUtJ6R4JSDpTt4pVJuXF1HzfPqMOftOWrtZok_OhQ"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3q2e8FlzPynYp0sngcbZFHuOl7k__FVnYxDjyYhZ6gPhC9VVzlqSxQSVBmsFb6xUACD1TjZFjjM0MGoBm9s4YLhXtIsGbFYs3tHIve1xiKhJcMlHfuWaZhCwzPHUE1yNze2Jfib0rL8RD-D3q2mWJBpGOy9BrVpcgfyo-XiGz07o1qFN2aGLGRtXpjSdYM6rQUxLSPH7uxxbyzhUtJ6R4JSDpTt4pVJuXF1HzfPqMOftOWrtZok_OhQ"
 
-                    alt="Taller de confecciÃƒÂ³n de turbantes ASONAPAQ"
+                    alt="Taller de confección de turbantes ASONAPAQ"
 
                     className="w-16 h-16 rounded-2xl object-cover flex-shrink-0 border border-slate-200"
 
@@ -632,13 +632,13 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     <h4 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
 
-                      Taller de Tejido & ConfecciÃƒÂ³n de Turbantes
+                      Taller de Tejido & Confección de Turbantes
 
                     </h4>
 
                     <p className="text-xs text-slate-600 line-clamp-2 mt-0.5">
 
-                      ElaboraciÃƒÂ³n de accesorios cÃƒÂ³más para aliviar la alopecia temporal por quimioterapia con dedicatorias de amor.
+                      Elaboración de accesorios cómás para aliviar la alopecia temporal por Quimioterapia con dedicatorias de amor.
 
                     </p>
 
@@ -702,7 +702,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     <Calendar className="w-3 h-3" />
 
-                    Martes 21 Mayo Ã‚Â· 8:00 AM
+                    Martes 21 Mayo · 8:00 AM
 
                   </span>
 
@@ -712,7 +712,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                   <img
 
-                    src="httpúblic/AB6AXuAJ6GG8ecY6Zw16PyCncfeLFjoaQgA1KhdLwWyTXTjR26xpf-nSzlMFKg_PLAzg0lFNJmcnubi5on4j8-HDlJRuKwVnQoFwzUrldV-QblffbIvs2i_vddqLwJWOZaPDMs5PJLNpLYHTvZWczJwZlHmZDz8gpUf052dhwaPWXg6-lBua_U1WpWJP55AAikrwkPH_OqYJpK0VYKJcIkhfNret67pvoEyugL2B2fI6RQ9LC6gS8FxvI7whyw"
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJ6GG8ecY6Zw16PyCncfeLFjoaQgA1KhdLwWyTXTjR26xpf-nSzlMFKg_PLAzg0lFNJmcnubi5on4j8-HDlJRuKwVnQoFwzUrldV-QblffbIvs2i_vddqLwJWOZaPDMs5PJLNpLYHTvZWczJwZlHmZDz8gpUf052dhwaPWXg6-lBua_U1WpWJP55AAikrwkPH_OqYJpK0VYKJcIkhfNret67pvoEyugL2B2fI6RQ9LC6gS8FxvI7whyw"
 
                     alt="Entrega de suplementos oncológicos en ION"
 
@@ -724,13 +724,13 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     <h4 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
 
-                      Entrega Mensual de Suplementos OncolÃƒÂ³gicos
+                      Entrega Mensual de Suplementos Oncológicos
 
                     </h4>
 
                     <p className="text-xs text-slate-600 line-clamp-2 mt-0.5">
 
-                      DistribuciÃƒÂ³n en sala de infusiÃƒÂ³n ION a pacientes forÃƒÂ¡neos de las provincias centrales y comarcas.
+                      Distribución en sala de infusión ION a pacientes foráneos de las provincias centrales y comarcas.
 
                     </p>
 
@@ -744,13 +744,13 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     <MapPin className="w-3.5 h-3.5 text-teal-700" />
 
-                    <span>Instituto OncolÃƒÂ³gico Nacional (ION)</span>
+                    <span>Instituto Oncológico Nacional (ION)</span>
 
                   </div>
 
                   <span className="bg-emerald-700 text-white px-3.5 py-1.5 rounded-full text-xs font-semibold shadow-xs">
 
-                    Inscrito Ã¢Å“â€œ
+                    Inscrito ✓
 
                   </span>
 
@@ -760,7 +760,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
 
 
-              {/* Jornada 3: CÃƒÂ­rculo de OraciÃƒÂ³n */}
+              {/* Jornada 3: Círculo de Oración */}
 
               <div className="bg-white rounded-3xl p-4 shadow-sm border border-slate-100 space-y-3">
 
@@ -778,7 +778,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     <Calendar className="w-3 h-3" />
 
-                    Jueves 23 Mayo Ã‚Â· 4:00 PM
+                    Jueves 23 Mayo · 4:00 PM
 
                   </span>
 
@@ -796,13 +796,13 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     <h4 className="text-xs sm:text-sm font-bold text-slate-900 leading-snug">
 
-                      CÃƒÂ­rculo de OraciÃƒÂ³n, Fe & Esperanza
+                      Círculo de Oración, Fe & Esperanza
 
                     </h4>
 
                     <p className="text-xs text-slate-600 line-clamp-2 mt-0.5">
 
-                      Encuentro ecumÃƒÂ©nico de fortaleza, lectura reflexiva y abrazo fraterno para familiares y cuidadores.
+                      Encuentro ecuménico de fortaleza, lectura reflexiva y abrazo fraterno para familiares y cuidadores.
 
                     </p>
 
@@ -816,7 +816,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     <Video className="w-3.5 h-3.5 text-slate-600" />
 
-                    <span>Capilla ION & VÃƒÂ­a Zoom</span>
+                    <span>Capilla ION & Vía Zoom</span>
 
                   </div>
 
@@ -878,7 +878,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
               <span className="text-emerald-700 text-[11px] font-bold uppercase tracking-wider">
 
-                PlanificaciÃƒÂ³n Semanal de Guardias
+                Planificación Semanal de Guardias
 
               </span>
 
@@ -890,7 +890,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
               <p className="text-xs text-slate-600 mt-1">
 
-                Marca los dÃƒÂ­as y horarios en que puedes ofrecer acompañando tu tiempo.
+                Marca los días y horarios en que puedes ofrecer acompañando tu tiempo.
 
               </p>
 
@@ -898,13 +898,13 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
 
 
-            {/* Selector de DÃƒÂ­as Semanales */}
+            {/* Selector de Días Semanales */}
 
             <div className="space-y-2">
 
               <label className="text-xs font-bold text-slate-800 block">
 
-                DÃƒÂ­as Disponibles:
+                Días Disponibles:
 
               </label>
 
@@ -916,13 +916,13 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                   { id: 'martes', short: 'M', label: 'Mar' },
 
-                  { id: 'miercoles', short: 'M', label: 'MiÃƒÂ©' },
+                  { id: 'miercoles', short: 'M', label: 'Mié' },
 
                   { id: 'jueves', short: 'J', label: 'Jue' },
 
                   { id: 'viernes', short: 'V', label: 'Vie' },
 
-                  { id: 'sabado', short: 'S', label: 'SÃƒÂ¡b' }
+                  { id: 'sabado', short: 'S', label: 'Sáb' }
 
                 ].map((d) => {
 
@@ -972,7 +972,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
               <label className="text-xs font-bold text-slate-800 block">
 
-                Franjas Horarias Preferidas:
+                Franjas Horarias Preferidías:
 
               </label>
 
@@ -1002,7 +1002,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     <p className="text-xs font-bold text-slate-900">Turno Matutino</p>
 
-                    <p className="text-[11px] text-slate-500">8:00 AM Ã¢â‚¬â€œ 12:00 PM</p>
+                    <p className="text-[11px] text-slate-500">8:00 AM - 12:00 PM</p>
 
                   </div>
 
@@ -1034,7 +1034,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     <p className="text-xs font-bold text-slate-900">Turno Vespertino</p>
 
-                    <p className="text-[11px] text-slate-500">1:00 PM Ã¢â‚¬â€œ 5:00 PM</p>
+                    <p className="text-[11px] text-slate-500">1:00 PM - 5:00 PM</p>
 
                   </div>
 
@@ -1052,7 +1052,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
               <label className="text-xs font-bold text-slate-800 block">
 
-                Zonas de AcompaÃƒÂ±amiento Habilitadas:
+                Zonas de Acompañamiento Habilitadas:
 
               </label>
 
@@ -1064,9 +1064,9 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     id: 'ion',
 
-                    title: 'Instituto OncolÃƒÂ³gico Nacional (ION - AncÃƒÂ³n)',
+                    title: 'Instituto Oncológico Nacional (ION - Ancón)',
 
-                    desc: 'Salas de Espera, HospitalizaciÃƒÂ³n y quimioterapia Ambulatoria.'
+                    desc: 'Salas de Espera, Hospitalización y Quimioterapia Ambulatoria.'
 
                   },
 
@@ -1074,9 +1074,9 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     id: 'visitas_domiciliarias',
 
-                    title: 'Visitas Domiciliarias - Panamá¡ Centro',
+                    title: 'Visitas Domiciliarias - Panamá Centro',
 
-                    desc: 'AcompaÃƒÂ±amiento a pacientes en reposo y apoyo a cuidadores familiares.'
+                    desc: 'Acompañamiento a pacientes en reposo y apoyo a cuidadores familiares.'
 
                   },
 
@@ -1086,7 +1086,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     title: 'Sede Administrativa ASONAPAQ',
 
-                    desc: 'Apoyo logÃƒÂ­stico, clasificaciÃƒÂ³n de insumos y kits.'
+                    desc: 'Apoyo logístico, clasificación de insumos y kits.'
 
                   }
 
@@ -1136,7 +1136,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
 
 
-            {/* Guardar botÃƒÂ³n */}
+            {/* Guíardar botón */}
 
             <div className="pt-2">
 
@@ -1162,7 +1162,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
               <div className="p-3 bg-emerald-100 text-emerald-900 rounded-2xl text-xs text-center font-medium">
 
-                Ã¢Å“â€œ Tus preferencias semanales han sido actualizadas con la coordinaciÃƒÂ³n de ASONAPAQ.
+                Ã¢Å“â€œ Tus preferencias semanales han sido actualizadías con la coordinación de ASONAPAQ.
 
               </div>
 
@@ -1206,13 +1206,13 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
               <h3 className="text-base font-bold text-slate-900">
 
-                InscripciÃƒÂ³n de Nuevos Voluntarios
+                Inscripción de Nuevos Voluntarios
 
               </h3>
 
               <p className="text-xs text-slate-600">
 
-                No necesitas experiencia mÃƒÂ©día previa: tu escucha compasiva, una sonrisa y tu presencia transforman vidas durante la terapia oncológica.
+                No necesitas experiencia médía previa: tu escucha compasiva, una sonrisa y tu presencia transforman vidas durante la terapia oncológica.
 
               </p>
 
@@ -1258,7 +1258,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     <label className="text-xs font-bold text-slate-800 block">
 
-                      CÃƒÂ©día / Documento <span className="text-rose-600">*</span>
+                      Cédula / Documento <span className="text-rose-600">*</span>
 
                     </label>
 
@@ -1268,9 +1268,9 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                       required
 
-                      value={postCedía}
+                      value={postCédula}
 
-                      onChange={(e) => setPostCedía(e.target.value)}
+                      onChange={(e) => setPostCédula(e.target.value)}
 
                       placeholder="8-000-0000"
 
@@ -1284,7 +1284,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     <label className="text-xs font-bold text-slate-800 block">
 
-                      WhatsApp / MÃƒÂ³vil <span className="text-rose-600">*</span>
+                      WhatsApp / Móvil <span className="text-rose-600">*</span>
 
                     </label>
 
@@ -1314,7 +1314,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                   <label className="text-xs font-bold text-slate-800 block">
 
-                    ProfesiÃƒÂ³n, Oficio o Habilidad
+                    Profesión, Oficio o Habilidad
 
                   </label>
 
@@ -1326,7 +1326,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     onChange={(e) => setPostProfesion(e.target.value)}
 
-                    placeholder="Ej. Docente, PsicÃƒÂ³loga, Conductor, Estudiante, Manualidades..."
+                    placeholder="Ej. Docente, Psicóloga, Conductor, Estudiante, Manualidades..."
 
                     className="w-full h-11 px-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:bg-white focus:border-emerald-600 focus:outline-none"
 
@@ -1340,7 +1340,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                   <label className="text-xs font-bold text-slate-800 block">
 
-                    Ã‚Â¿QuÃƒÂ© te inspira a acompaÃƒÂ±ar a pacientes con cÃƒÂ¡ncer? <span className="text-rose-600">*</span>
+                    ¿Qué te inspira a acompañar a pacientes con cáncer? <span className="text-rose-600">*</span>
 
                   </label>
 
@@ -1354,7 +1354,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                     onChange={(e) => setPostMotivacion(e.target.value)}
 
-                    placeholder="CuÃƒÂ©ntanos brevemente tu sentir o experiencia personal de vida..."
+                    placeholder="Cuéntanos brevemente tu sentir o experiencia personal de vida..."
 
                     className="w-full p-3 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:bg-white focus:border-emerald-600 focus:outline-none"
 
@@ -1388,13 +1388,13 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                       <span className="text-xs font-bold block">
 
-                        Compromiso de Taller de InducciÃƒÂ³n & Bioseguridad
+                        Compromiso de Taller de Inducción & Bioseguridad
 
                       </span>
 
                       <p className="text-[11px] text-slate-500 mt-0.5">
 
-                        Acepto participar en la capacitaciÃƒÂ³n gratuita de 2 horas sobre protocolos hospitalarios y bioseguridad en el ION.
+                        Acepto participar en la capacitación gratuita de 2 horas sobre protocolos hospitalarios y bioseguridad en el ION.
 
                       </p>
 
@@ -1420,7 +1420,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                   <span>
 
-                    {postulacionLoading ? 'Transmitiendía n8n...' : 'Enviar Mi PostulaciÃƒÂ³n a ASONAPAQ'}
+                    {postulacionLoading ? 'Transmitiendía n8n...' : 'Enviar Mi Postulación a ASONAPAQ'}
 
                   </span>
 
@@ -1438,7 +1438,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
                 <p className="text-xs text-slate-600 leading-relaxed">
 
-                  Hemás recibido tus datos con mucha gratitud. Nuestro equipo de coordinaciÃƒÂ³n de voluntariado de ASONAPAQ te contactarÃƒÂ¡ vÃƒÂ­a WhatsApp en más de 48 horas.
+                  Hemás recibido tus datos con mucha gratitud. Nuestro equipo de coordinación de voluntariado de ASONAPAQ te contactará vía WhatsApp en más de 48 horas.
 
                 </p>
 
@@ -1468,7 +1468,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
         <p className="text-xs sm:text-sm text-slate-800 italic leading-relaxed">
 
-          &ldquo;Sostener la mano de una persona mientras recibe su quimio y decirle &lsquo;no estÃƒÂ¡s solo&rsquo;, es el acto mÃƒÂ¡s sagrado y sanador que he experimentado en mi vida.&rdquo;
+          &ldquo;Sostener la mano de una persona mientras recibe su quimio y decirle &lsquo;no estás solo&rsquo;, es el acto más sagrado y sanador que he experimentado en mi vida.&rdquo;
 
         </p>
 

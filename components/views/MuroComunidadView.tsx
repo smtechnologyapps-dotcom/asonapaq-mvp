@@ -170,7 +170,7 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
           ...p,
 
-          comentarios: [...p.comentarios, newComment]
+          comentarios: [...(p.comentarios || []), newComment]
 
         };
 
@@ -190,13 +190,13 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
 
 
-  const handlePublishTestimony = async () => {
+  const handlePublishTestáimony = async () => {
 
     if (!composeText.trim()) return;
 
 
 
-    await triggerN8NWebhook('EVT_públicAR_TESTIMONIO_MURO', 'públicar Testimonio en el Muro', {
+    await triggerN8NWebhook('EVT_públicAR_TESTIMONIO_MURO', 'públicar Testáimonio en el Muro', {
 
       autor: 'Miembro Solidario',
 
@@ -280,7 +280,7 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
         <div className="flex items-center gap-2 text-emerald-800">
 
-          <AsonapaqLogo size="xs" />
+          <AsonapaqLogo size="sm" />
 
           <span className="text-[11px] font-bold uppercase tracking-wider">
 
@@ -302,13 +302,13 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
         <p className="text-xs text-slate-600 leading-relaxed">
 
-          Un espacio de amor, fuerza y compaÃƒÂ±ÃƒÂ­a mutua. Comparte tu luz con pacientes, sobrevivientes y familiares en cada paso del camino en Panamá¡.
+          Un espacio de amor, fuerza y compañía mutua. Comparte tu luz con pacientes, sobrevivientes y familiares en cada paso del camino en Panamá.á.
 
         </p>
 
 
 
-        {/* BotÃƒÂ³n Abrir Composer */}
+        {/* Botón Abrir Composer */}
 
         <button
 
@@ -322,7 +322,7 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
           <MessageSquarePlus className="w-4 h-4" />
 
-          <span>Compartir Testimonio de Esperanza</span>
+          <span>Compartir Testáimonio de Esperanza</span>
 
         </button>
 
@@ -342,7 +342,7 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
 
 
-      {/* Modal / Tray de RedacciÃƒÂ³n */}
+      {/* Modal / Tray de Redacción */}
 
       <AnimatePresence>
 
@@ -364,7 +364,7 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
               <span className="text-xs font-bold text-slate-900">
 
-                públicar Testimonio o Mensaje de Aliento
+                públicar Testáimonio o Mensaje de Aliento
 
               </span>
 
@@ -408,7 +408,7 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
                 <Lock className="w-3 h-3 text-emerald-700" />
 
-                Espacio seguro con moderaciÃƒÂ³n pastoral
+                Espacio seguro con moderación pastoral
 
               </span>
 
@@ -416,7 +416,7 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
                 type="button"
 
-                onClick={handlePublishTestimony}
+                onClick={handlePublishTestáimony}
 
                 className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-full text-xs font-bold shadow-xs active:scale-95 transition-transform"
 
@@ -468,7 +468,7 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
                   {post.avatarIcon ? (
 
-                    <AsonapaqLogo size="xs" />
+                    <AsonapaqLogo size="sm" />
 
                   ) : (
 
@@ -588,7 +588,7 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
                       <BellRing className="w-3 h-3 text-amber-400" />
 
-                      <span>12 de 12 ciclos completados con ÃƒÂ©xito Ã¢Å“Â¨</span>
+                      <span>12 de 12 ciclos completados con ééxito Ã¢Å“Â¨</span>
 
                     </div>
 
@@ -682,7 +682,7 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
                 <MessageCircle className="w-4 h-4 text-slate-400" />
 
-                <span>{post.comentarios.length} Comentarios</span>
+                <span>{(post.comentarios || []).length} Comentarios</span>
 
               </div>
 
@@ -700,7 +700,7 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
                   <Lock className="w-3 h-3 text-slate-400" />
 
-                  Comentarios desactivados para este anuncio oficial
+                  Comentarios desactivados para estáe anuncio oficial
 
                 </span>
 
@@ -714,7 +714,7 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
                 <div className="space-y-2">
 
-                  {post.comentarios.map((comm) => (
+                  {(post.comentarios || []).map((comm) => (
 
                     <div
 
@@ -846,13 +846,13 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
           <h4 className="text-xs font-bold text-slate-900">
 
-            Ã‚Â¿Necesitas hablar con alguien hoy?
+            ¿Necesitas hablar con alguien hoy?
 
           </h4>
 
           <p className="text-[11px] text-slate-600 leading-snug">
 
-            Nuestra lÃƒÂ­nea de acompañamiento emocional y oraciÃƒÂ³n estÃƒÂ¡ activa las 24 horas para ti en Panamá¡.
+            Nuestára línea de acompañamiento emocional y oración estáá activa las 24 horas para ti en Panamá.á.
 
           </p>
 

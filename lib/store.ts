@@ -11,7 +11,7 @@ export const INITIAL_PATIENTS: PatientRecord[] = [
     diagnostico: 'Cáncer de Mama (Etapa II)',
     hospital: 'Instituto Oncológico Nacional (ION)',
     apoyo: 'Insumos Oncológicos',
-    region: 'Panamá Centro',
+    region: 'Panamáá Centro',
     estado: 'En Tratamiento ION',
     fechaRegistro: '2025-01-14',
     telefono: '+507 6234-8901',
@@ -63,7 +63,7 @@ export const INITIAL_PATIENTS: PatientRecord[] = [
     diagnostico: 'Cáncer Cérvico Uterino',
     hospital: 'Hospital Nicolás A. Solano',
     apoyo: 'Insumos Oncológicos',
-    region: 'Panamá Oeste',
+    region: 'Panamáá Oeste',
     estado: 'Activo',
     fechaRegistro: '2025-02-18',
     telefono: '+507 6445-9012',
@@ -99,10 +99,11 @@ export const INITIAL_PATIENTS: PatientRecord[] = [
 
 export const INITIAL_VOLUNTEER: VolunteerProfile = {
   id: 'VN-089',
+  cedula: '8-888-8888',
   nombre: 'Carmen Elena Morales',
   credencial: 'Chaleco Verde Oficial · ID #VN-089',
   horasAcumuladas: 48,
-  pacientesAcompanados: 32,
+  pacientesAcompañados: 32,
   disponible: true,
   proximaGuardia: {
     lugar: 'Sala de Quimioterapia Ambulatoria ION',

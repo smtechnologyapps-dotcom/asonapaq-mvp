@@ -4,7 +4,7 @@ import { AntiCapture } from "../components/security/AntiCapture";
 
 export const metadata: Metadata = {
   title: "ASONAPAQ — Asociación Nacional de Pacientes de Quimioterapia",
-  description: "Fe · Esperanza · Vida. Plataforma de apoyo integral a pacientes oncológicos en Panamá.",
+  description: "Fe · Esperanza · Vida. Plataforma de apoyo integral a pacientes oncológicos en Panamáá.",
   robots: { index: false, follow: false },
 };
 
