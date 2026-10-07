@@ -1,0 +1,122 @@
+[
+  {
+    "nombre": "Vilma Gálvez",
+    "cedula": "8-362-114",
+    "celular": "6969-3340",
+    "diagnostico": "Cáncer de ovarios",
+    "etapa": "Etapa I",
+    "provincia": "Panamá"
+  },
+  {
+    "nombre": "Alicia Lorenzo",
+    "cedula": "2-49-897",
+    "celular": "6511-8399",
+    "diagnostico": "Cáncer de mama",
+    "etapa": "Desconozco",
+    "provincia": "Panamá"
+  },
+  {
+    "nombre": "Liseth Lezcano",
+    "cedula": "4-246-669",
+    "celular": "6392-1000",
+    "diagnostico": "Cáncer de mama",
+    "etapa": "Etapa IV",
+    "provincia": "Panamá"
+  },
+  {
+    "nombre": "Yira Samudio",
+    "cedula": "8-472-12",
+    "celular": "6539-5161",
+    "diagnostico": "Cáncer de mama",
+    "etapa": "Etapa III",
+    "provincia": "Panamá"
+  },
+  {
+    "nombre": "Heidi Gonzalez",
+    "cedula": "8-724-1600",
+    "celular": "6605-1768",
+    "diagnostico": "Cáncer cérvico uterino",
+    "etapa": "Desconozco",
+    "provincia": "Panamá"
+  },
+  {
+    "nombre": "Reina Madrigal",
+    "cedula": "8-777-41",
+    "celular": "6938-7599",
+    "diagnostico": "Cáncer de mama",
+    "etapa": "Etapa III",
+    "provincia": "Panamá"
+  },
+  {
+    "nombre": "Melisa Cowes",
+    "cedula": "8-391-468",
+    "celular": "6558-0146",
+    "diagnostico": "Cáncer de mama",
+    "etapa": "Etapa III",
+    "provincia": "Panamá"
+  },
+  {
+    "nombre": "Elizabeth Quintero",
+    "cedula": "8-421-907",
+    "celular": "6789-4076",
+    "diagnostico": "Cáncer de colon",
+    "etapa": "Desconozco",
+    "provincia": "Panamá"
+  },
+  {
+    "nombre": "Elodia Quintero",
+    "cedula": "6-704-1314",
+    "celular": "6788-3607",
+    "diagnostico": "Cáncer cérvico uterino",
+    "etapa": "Etapa I",
+    "provincia": "Herrera"
+  },
+  {
+    "nombre": "Maylín Ruíz",
+    "cedula": "8-808-906",
+    "celular": "6607-0244",
+    "diagnostico": "Cáncer de cabeza y cuello",
+    "etapa": "Desconozco",
+    "provincia": "Panamá"
+  },
+  {
+    "nombre": "Hillary Romero",
+    "cedula": "8-1020-643",
+    "celular": "6738-7736",
+    "diagnostico": "Linfoma",
+    "etapa": "Desconozco",
+    "provincia": "Panamá Oeste"
+  },
+  {
+    "nombre": "Rosmery Frias",
+    "cedula": "7-704-996",
+    "celular": "6674-0269",
+    "diagnostico": "Cáncer de mama",
+    "etapa": "Etapa III",
+    "provincia": "Panamá Oeste"
+  },
+  {
+    "nombre": "Pascualito Carrion",
+    "cedula": "2-98-539",
+    "celular": "6645-4229",
+    "diagnostico": "Cáncer de Próstata",
+    "etapa": "Desconozco",
+    "provincia": "Coclé"
+  },
+  {
+    "nombre": "Encarnacion Castillo",
+    "cedula": "2-105-973",
+    "celular": "6749-3526",
+    "diagnostico": "Cáncer de endometrio",
+    "etapa": "Etapa IV",
+    "provincia": "Coclé"
+  },
+  {
+    "nombre": "Yariela Milay",
+    "cedula": "8-774-2166",
+    "celular": "6234-4442",
+    "diagnostico": "Cáncer de mama",
+    "etapa": "Etapa III",
+    "provincia": "Panamá Oeste"
+  }
+]
