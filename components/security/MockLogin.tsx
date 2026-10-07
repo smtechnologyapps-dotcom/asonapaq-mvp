@@ -7,9 +7,10 @@ import { supabase } from '../../lib/supabase';
 interface MockLoginProps {
   targetRole: 'paciente' | 'voluntario' | 'admin';
   onSuccess: () => void;
+  onRouteChange?: (route: any) => void;
 }
 
-export const MockLogin: React.FC<MockLoginProps> = ({ targetRole, onSuccess }) => {
+export const MockLogin: React.FC<MockLoginProps> = ({ targetRole, onSuccess, onRouteChange }) => {
   const [cedula, setCedula] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -98,6 +99,19 @@ export const MockLogin: React.FC<MockLoginProps> = ({ targetRole, onSuccess }) =
             <ShieldCheck className="w-5 h-5" /> 
             {isLoading ? 'Verificando...' : 'Ingresar de Forma Segura'}
           </button>
+          
+          {onRouteChange && targetRole !== 'admin' && (
+            <div className="text-center mt-6 pt-4 border-t border-slate-100">
+              <p className="text-sm text-slate-500 mb-2">¿No tienes cuenta todavía?</p>
+              <button 
+                type="button" 
+                onClick={() => onRouteChange('registro')}
+                className="text-emerald-600 font-bold hover:underline transition-all"
+              >
+                Regístrate aquí
+              </button>
+            </div>
+          )}
         </form>
       </div>
     </div>

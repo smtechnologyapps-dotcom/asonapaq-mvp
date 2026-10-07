@@ -97,13 +97,13 @@ export const MainAppContainer: React.FC<MainAppContainerProps> = ({
       if (isAuthenticatedAs === 'paciente' || isAuthenticatedAs === 'admin') {
         return <PortalPacienteView />;
       }
-      return <MockLogin targetRole="paciente" onSuccess={() => setIsAuthenticatedAs('paciente')} />;
+      return <MockLogin targetRole="paciente" onSuccess={() => setIsAuthenticatedAs('paciente')} onRouteChange={handleRouteChange} />;
     }
     if (route === 'portal_voluntarios') {
       if (isAuthenticatedAs === 'voluntario' || isAuthenticatedAs === 'admin') {
         return <PortalVoluntarioView volunteer={volunteer} onUpdateVolunteer={handleUpdateVolunteer} />;
       }
-      return <MockLogin targetRole="voluntario" onSuccess={() => setIsAuthenticatedAs('voluntario')} />;
+      return <MockLogin targetRole="voluntario" onSuccess={() => setIsAuthenticatedAs('voluntario')} onRouteChange={handleRouteChange} />;
     }
     if (route === 'registro') {
       return <FormularioRegistroView onRouteChange={handleRouteChange} />;

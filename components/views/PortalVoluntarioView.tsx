@@ -278,7 +278,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
             <p className="text-xs text-emerald-100/90 max-w-xs leading-relaxed">
 
-              Gracias por regalar tu tiempo y sembrar luz a quienes transitan la Quimioterapia en Panamáá.
+              Gracias por regalar tu tiempo y sembrar luz a quienes transitan la Quimioterapia en Panamá.
 
             </p>
 

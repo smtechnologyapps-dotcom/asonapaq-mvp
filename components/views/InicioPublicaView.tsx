@@ -142,7 +142,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
             <span className="text-xs text-slate-900 font-bold tracking-wide">
 
-              Panamáá · Desde 1989
+              Panamá · Desde 1989
 
             </span>
 
@@ -196,7 +196,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
             </strong>
 
-            . En la República de Panamáá.
+            . En la República de Panamá.
 
           </p>
 
@@ -518,7 +518,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed pl-1">
 
-            Brindar acompañamiento humano, soporte integral y asistencia directa con insumos y calidad ad ad a cada paciente en tratamiento de quimioterapia y a sus seres queridos en Panamáá.
+            Brindar acompañamiento humano, soporte integral y asistencia directa con insumos y calidad ad ad a cada paciente en tratamiento de quimioterapia y a sus seres queridos en Panamá.
 
           </p>
 
@@ -540,7 +540,7 @@ export const InicioPublicaView: React.FC<InicioPublicaViewProps> = ({
 
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed pl-1">
 
-            Ser el faro de esperanza, dignidad y solidaridad oncológica comunitaria en Panamáá desde 1989, garantizando que ningún paciente enfrente la quimioterapia en soledad.
+            Ser el faro de esperanza, dignidad y solidaridad oncológica comunitaria en Panamá desde 1989, garantizando que ningún paciente enfrente la quimioterapia en soledad.
 
           </p>
 

@@ -196,7 +196,7 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
 
 
-    await triggerN8NWebhook('EVT_públicAR_TESTIMONIO_MURO', 'públicar Testáimonio en el Muro', {
+    await triggerN8NWebhook('EVT_públicAR_TESTIMONIO_MURO', 'públicar Testimonio en el Muro', {
 
       autor: 'Miembro Solidario',
 
@@ -322,7 +322,7 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
           <MessageSquarePlus className="w-4 h-4" />
 
-          <span>Compartir Testáimonio de Esperanza</span>
+          <span>Compartir Testimonio de Esperanza</span>
 
         </button>
 
@@ -364,7 +364,7 @@ export const MuroComunidadView: React.FC<MuroComunidadViewProps> = ({
 
               <span className="text-xs font-bold text-slate-900">
 
-                públicar Testáimonio o Mensaje de Aliento
+                públicar Testimonio o Mensaje de Aliento
 
               </span>
 
