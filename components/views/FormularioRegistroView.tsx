@@ -14,9 +14,11 @@ export const FormularioRegistroView: React.FC<FormularioRegistroViewProps> = ({ 
   const [step, setStep] = useState(1);
   const [userType, setUserType] = useState<'paciente' | 'voluntario' | ''>('');
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // Form State
   const [formData, setFormData] = useState({
-    nombre: '', cedula: '', celular: '', email: '',
+    nombre: '', cedula: '', email: '', password: '', celular: '',
     fechaNacimiento: '', sexo: '', estadoCivil: '', nivelAcademico: '',
     provincia: '', direccion: '', tipoSangre: '', donante: 'No',
     contactoEmergencia: '', telEmergencia: '', parentesco: '',
@@ -30,10 +32,66 @@ export const FormularioRegistroView: React.FC<FormularioRegistroViewProps> = ({ 
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert('¡Registro completado exitosamente! Esta información ha sido encriptada y guardada.');
-    if (onRouteChange) onRouteChange('inicio_publica');
+    setIsSubmitting(true);
+    try {
+      // 1. Crear usuario en Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: { nombre_completo: formData.nombre, cedula: formData.cedula, rol: userType }
+        }
+      });
+      if (authError) throw authError;
+
+      if (authData.user) {
+        // 2. Actualizar resto del perfil
+        const { error: profileError } = await supabase.from('perfiles').update({
+          celular: formData.celular,
+          fecha_nacimiento: formData.fechaNacimiento || null,
+          sexo: formData.sexo,
+          estado_civil: formData.estadoCivil,
+          nivel_academico: formData.nivelAcademico,
+          provincia: formData.provincia,
+          direccion: formData.direccion,
+          tipo_sangre: formData.tipoSangre,
+          contacto_emergencia: formData.contactoEmergencia,
+          tel_emergencia: formData.telEmergencia,
+          parentesco_emergencia: formData.parentesco
+        }).eq('id', authData.user.id);
+        if (profileError) throw profileError;
+
+        // 3. Insertar datos específicos
+        if (userType === 'paciente') {
+          await supabase.from('datos_medicos_pacientes').insert({
+            id: authData.user.id,
+            diagnostico_principal: formData.diagnostico,
+            etapa_cancer: formData.etapa,
+            centro_atencion: formData.atencion,
+            tratamiento_actual: formData.tratamiento,
+            medicamentos: formData.medicamento,
+            donante_sangre: formData.donante === 'Sí'
+          });
+        } else if (userType === 'voluntario') {
+          await supabase.from('datos_voluntarios').insert({
+            id: authData.user.id,
+            estatus_laboral: formData.estatusLaboral,
+            area_apoyo: formData.tipoApoyo,
+            pasatiempos: formData.pasatiempo
+          });
+        }
+      }
+
+      alert('¡Registro completado exitosamente! Hemos asegurado tu información.');
+      if (onRouteChange) onRouteChange('inicio_publica');
+    } catch (err: any) {
+      console.error(err);
+      alert('Error al registrar: ' + (err.message || 'Error desconocido'));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // PANTALLA 0: LEY DE PROTECCIÓN DE DATOS
@@ -148,7 +206,16 @@ export const FormularioRegistroView: React.FC<FormularioRegistroViewProps> = ({ 
                   <label className="text-xs font-bold text-slate-700 uppercase">Cédula o Pasaporte</label>
                   <input required name="cedula" value={formData.cedula} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-emerald-500" placeholder="Ej. 8-000-0000" />
                 </div>
-                
+
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-700 uppercase">Correo Electrónico</label>
+                  <input required type="email" name="email" value={formData.email} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-emerald-500" placeholder="Ej. correo@ejemplo.com" />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-700 uppercase">Crear Contraseña</label>
+                  <input required type="password" name="password" value={formData.password} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-emerald-500" placeholder="Mínimo 6 caracteres" minLength={6} />
+                </div>
+
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-slate-700 uppercase">Celular</label>
                   <input required type="tel" name="celular" value={formData.celular} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-emerald-500" placeholder="Ej. 6000-0000" />
@@ -313,9 +380,10 @@ export const FormularioRegistroView: React.FC<FormularioRegistroViewProps> = ({ 
             ) : (
               <button
                 type="submit"
-                className="flex items-center gap-2 px-8 py-3 rounded-xl font-black text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg hover:shadow-xl transition-all"
+                disabled={isSubmitting}
+                className="flex items-center gap-2 px-8 py-3 rounded-xl font-black text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
               >
-                <Save className="w-5 h-5" /> Enviar Registro
+                <Save className="w-5 h-5" /> {isSubmitting ? 'Guardando...' : 'Enviar Registro'}
               </button>
             )}
           </div>
