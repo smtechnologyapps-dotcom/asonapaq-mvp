@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { AppRoute, PatientRecord, VolunteerProfile, CommunityPost } from '../lib/types';
 import { INITIAL_PATIENTS, INITIAL_VOLUNTEER, INITIAL_POSTS } from '../lib/store';
+import { supabase } from '../lib/supabase';
 import { Header } from './Header';
 import { BottomNav } from './BottomNav';
 import { Footer } from './Footer';
@@ -31,6 +32,42 @@ export const MainAppContainer: React.FC<MainAppContainerProps> = ({
   const [patients, setPatients] = useState<PatientRecord[]>(INITIAL_PATIENTS);
   const [volunteer, setVolunteer] = useState<VolunteerProfile>(INITIAL_VOLUNTEER);
   const [posts, setPosts] = useState<CommunityPost[]>(INITIAL_POSTS);
+
+
+  React.useEffect(() => {
+    if (isAuthenticatedAs === 'admin') {
+      const fetchSupabasePatients = async () => {
+        try {
+          const { data, error } = await supabase
+            .from('perfiles')
+            .select('*, datos_medicos_pacientes(*)');
+            
+          if (data && !error) {
+            const mapped = data
+              .filter(p => p.rol === 'paciente')
+              .map(p => ({
+                id: p.id,
+                nombre: p.nombre_completo || 'Paciente',
+                cedula: p.cedula || 'N/A',
+                telefono: p.celular || 'N/A',
+                diagnostico: p.datos_medicos_pacientes?.[0]?.diagnostico_principal || 'Desconozco',
+                hospital: p.datos_medicos_pacientes?.[0]?.centro_atencion || 'ION',
+                apoyo: 'En Revisión',
+                region: p.provincia || 'N/A',
+                estado: 'Activo',
+                fechaRegistro: new Date(p.created_at).toLocaleDateString(),
+                observaciones: 'Etapa: ' + (p.datos_medicos_pacientes?.[0]?.etapa_cancer || 'N/A')
+              }));
+            if (mapped.length > 0) {
+              setPatients(mapped);
+            }
+          }
+        } catch (e) { console.error('Error fetching data:', e); }
+      };
+      fetchSupabasePatients();
+    }
+  }, [isAuthenticatedAs]);
+
 
   const handleAddPatientRecord = (newPatient: PatientRecord) => setPatients([newPatient, ...patients]);
   const handlePurgePatientData = (cedula: string) => setPatients(patients.filter((p) => p.cedula !== cedula));
