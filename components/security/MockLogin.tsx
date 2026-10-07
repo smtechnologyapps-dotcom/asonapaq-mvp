@@ -5,7 +5,7 @@ import { Lock, User, ShieldCheck, Heart } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 
 interface MockLoginProps {
-  targetRole: 'paciente' | 'voluntario';
+  targetRole: 'paciente' | 'voluntario' | 'admin';
   onSuccess: () => void;
 }
 
@@ -49,7 +49,9 @@ export const MockLogin: React.FC<MockLoginProps> = ({ targetRole, onSuccess }) =
           <div className="mx-auto bg-emerald-500/10 w-16 h-16 rounded-full flex items-center justify-center mb-4">
             {targetRole === 'paciente' ? <Heart className="w-8 h-8 text-emerald-400" /> : <User className="w-8 h-8 text-emerald-400" />}
           </div>
-          <h2 className="text-2xl font-black text-white">Portal {targetRole === 'paciente' ? 'del Paciente' : 'del Voluntario'}</h2>
+          <h2 className="text-2xl font-black text-white">
+            {targetRole === 'admin' ? 'Acceso Administrativo' : `Portal del ${targetRole === 'paciente' ? 'Paciente' : 'Voluntario'}`}
+          </h2>
           <p className="text-slate-400 text-sm mt-2">Acceso seguro a su expediente y solicitudes</p>
         </div>
 
