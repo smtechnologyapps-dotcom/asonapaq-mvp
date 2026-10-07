@@ -39,7 +39,7 @@ export const FormularioRegistroView: React.FC<FormularioRegistroViewProps> = ({ 
     try {
       // 1. Crear usuario en Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email,
+        email: formData.email || `${formData.cedula}@asonapaq.local`,
         password: formData.password,
         options: {
           data: { nombre_completo: formData.nombre, cedula: formData.cedula, rol: userType }
@@ -209,11 +209,11 @@ export const FormularioRegistroView: React.FC<FormularioRegistroViewProps> = ({ 
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-700 uppercase">Correo Electrónico</label>
-                  <input required type="email" name="email" value={formData.email} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-emerald-500" placeholder="Ej. correo@ejemplo.com" />
+                  <label className="text-xs font-bold text-slate-700 uppercase">Correo Electrónico (Opcional)</label>
+                  <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-emerald-500" placeholder="Ej. correo@ejemplo.com" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-700 uppercase">Crear Contraseña</label>
+                  <label className="text-xs font-bold text-slate-700 uppercase">Crear Contraseña o PIN</label>
                   <input required type="password" name="password" value={formData.password} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-emerald-500" placeholder="Mínimo 6 caracteres" minLength={6} />
                 </div>
 
