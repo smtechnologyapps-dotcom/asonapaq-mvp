@@ -50,7 +50,8 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
   patients = []
 }) => {
   const [activeTab, setActiveTab] = useState<'graficos' | 'datos' | 'solicitudes'>('graficos');
-  const [solicitudes, setSolicitudes] = useState<any[]>([]);
+    const [solicitudes, setSolicitudes] = useState<any[]>([]);
+  const [directorios, setDirectorios] = useState<any[]>([]);
 
   // Interactive filters for charts
   const [chartFilterRegion, setChartFilterRegion] = useState('Todas');
@@ -58,16 +59,20 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
   const [chartFilterApoyo, setChartFilterApoyo] = useState('Todos');
 
   useEffect(() => {
-    const fetchSolicitudes = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('solicitudes_apoyo')
-          .select('*, perfiles(nombre_completo, cedula, celular)')
-          .order('creado_en', { ascending: false });
-        if (data) setSolicitudes(data);
-      } catch(e) { console.error(e); }
+        const fetchSolicitudes = async () => {
+      const { data } = await supabase
+        .from('solicitudes_apoyo')
+        .select('*, perfiles(nombre_completo, cedula, celular)');
+      if (data) setSolicitudes(data);
     };
+    
+    const fetchDirectorios = async () => {
+      const { data } = await supabase.from('perfiles').select('*').order('created_at', { ascending: false });
+      if (data) setDirectorios(data);
+    };
+    
     fetchSolicitudes();
+    fetchDirectorios();
   }, []);
 
   const actualizarEstadoSolicitud = async (id: string, nuevoEstado: string) => {
@@ -358,10 +363,48 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
           </div>
         </div>
       ) : (
-        <div className="bg-white p-10 rounded-[2rem] shadow-sm border border-slate-100 text-center flex flex-col items-center justify-center space-y-4">
-           <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center">
-             <ClipboardList className="w-8 h-8 text-slate-400" />
-           </div>
+        
+        <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+          <div className="mb-4 flex items-center justify-between">
+            <h3 className="text-lg font-black text-slate-900">Directorio de Pacientes y Voluntarios</h3>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-100 text-xs uppercase tracking-wider text-slate-500 font-bold">
+                  <th className="p-4">Cédula</th>
+                  <th className="p-4">Nombre Completo</th>
+                  <th className="p-4">Rol</th>
+                  <th className="p-4">Celular</th>
+                  <th className="p-4">Región</th>
+                  <th className="p-4">Fecha Reg.</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {directorios.length > 0 ? directorios.map((u, i) => (
+                  <tr key={i} className="hover:bg-slate-50 transition-colors">
+                    <td className="p-4 text-sm font-bold text-slate-700">{u.cedula}</td>
+                    <td className="p-4 text-sm font-medium text-slate-900">{u.nombre_completo}</td>
+                    <td className="p-4 text-sm">
+                      <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+                        u.rol === 'paciente' ? 'bg-emerald-100 text-emerald-800' : 
+                        u.rol === 'voluntario' ? 'bg-sky-100 text-sky-800' : 'bg-slate-200 text-slate-800'
+                      }`}>
+                        {u.rol}
+                      </span>
+                    </td>
+                    <td className="p-4 text-sm text-slate-600">{u.celular || 'N/A'}</td>
+                    <td className="p-4 text-sm text-slate-600">{u.provincia || 'N/A'}</td>
+                    <td className="p-4 text-sm text-slate-500">{new Date(u.creado_en || u.created_at || new Date()).toLocaleDateString()}</td>
+                  </tr>
+                )) : (
+                  <tr><td colSpan={6} className="p-8 text-center text-slate-500 font-medium">Cargando directorio o no hay registros disponibles.</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
            <div className="max-w-md">
              <h3 className="text-xl font-black text-slate-800">Vista Tabular Desactivada</h3>
              <p className="text-sm text-slate-500 mt-2 leading-relaxed">

@@ -50,13 +50,13 @@ export const MainAppContainer: React.FC<MainAppContainerProps> = ({
                 nombre: p.nombre_completo || 'Paciente',
                 cedula: p.cedula || 'N/A',
                 telefono: p.celular || 'N/A',
-                diagnostico: p.datos_medicos_pacientes?.[0]?.diagnostico_principal || 'Desconozco',
-                hospital: p.datos_medicos_pacientes?.[0]?.centro_atencion || 'ION',
+                diagnostico: p.datos_medicos_pacientes?.diagnostico_principal || 'Desconozco',
+                hospital: p.datos_medicos_pacientes?.centro_atencion || 'ION',
                 apoyo: 'En Revisión',
                 region: p.provincia || 'N/A',
                 estado: 'Activo',
-                fechaRegistro: new Date(p.created_at).toLocaleDateString(),
-                observaciones: 'Etapa: ' + (p.datos_medicos_pacientes?.[0]?.etapa_cancer || 'N/A')
+                fechaRegistro: new Date(p.creado_en || new Date()).toLocaleDateString(),
+                observaciones: 'Etapa: ' + (p.datos_medicos_pacientes?.etapa_cancer || 'N/A')
               }));
             if (mapped.length > 0) {
               setPatients(mapped);
@@ -131,7 +131,7 @@ export const MainAppContainer: React.FC<MainAppContainerProps> = ({
             {currentRoute === 'inicio_publica' && <InicioPublicaView onRouteChange={handleRouteChange} />}
             {currentRoute === 'muro_comunicaciones' && <MuroComunidadView posts={posts} onUpdatePosts={handleUpdatePosts} />}
             {currentRoute === 'auditoria_social' && <AuditoriaSocialView onRouteChange={handleRouteChange} />}
-            {['portal_pacientes', 'portal_voluntarios', 'panel_administracion'].includes(currentRoute) && renderProtectedRoute(currentRoute)}
+            {['portal_pacientes', 'portal_voluntarios', 'panel_administracion', 'registro'].includes(currentRoute) && renderProtectedRoute(currentRoute)}
           </motion.div>
         </AnimatePresence>
         <Footer onRouteChange={handleRouteChange} />
