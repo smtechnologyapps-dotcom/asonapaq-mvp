@@ -1,4 +1,7 @@
-'use client';
+﻿const fs = require('fs');
+
+const file = 'components/views/PortalPacienteView.tsx';
+let text = \'use client';
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
@@ -12,7 +15,7 @@ export const PortalPacienteView = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [showForm, setShowForm] = useState(false);
-  const [tipoApoyo, setTipoApoyo] = useState('Medicamentos e Insumos');
+  const [tipoApoyo, setTipoApoyo] = useState('Medicamentos');
   const [descripcion, setDescripcion] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -23,10 +26,7 @@ export const PortalPacienteView = () => {
   const fetchData = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setIsLoading(false);
-        return;
-      }
+      if (!user) return;
 
       const { data: profile } = await supabase
         .from('perfiles')
@@ -76,8 +76,8 @@ export const PortalPacienteView = () => {
     }
   };
 
-  if (isLoading) return <div className="p-8 text-center text-slate-500 font-bold">Cargando tu perfil médico...</div>;
-  if (!userProfile) return <div className="p-8 text-center text-rose-500 font-bold">Error: No se encontró tu perfil.</div>;
+  if (isLoading) return <div className="p-8 text-center text-slate-500 font-bold">Cargando perfil...</div>;
+  if (!userProfile) return <div className="p-8 text-center text-rose-500 font-bold">Error: No se encontró el perfil.</div>;
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 space-y-6">
@@ -125,11 +125,7 @@ export const PortalPacienteView = () => {
                 </div>
                 <p className="text-slate-600 text-sm">{sol.descripcion}</p>
               </div>
-              <div className={`px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
-                sol.estado === 'Aprobado' ? 'bg-emerald-100 text-emerald-700' : 
-                sol.estado === 'Rechazado' ? 'bg-rose-100 text-rose-700' : 
-                'bg-amber-100 text-amber-700'
-              }`}>
+              <div className={\px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap \\}>
                 {sol.estado}
               </div>
             </div>
@@ -192,3 +188,7 @@ export const PortalPacienteView = () => {
     </div>
   );
 };
+\;
+
+fs.writeFileSync(file, text, 'utf8');
+console.log('PortalPacienteView actualizado.');

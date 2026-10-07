@@ -95,7 +95,7 @@ export const MainAppContainer: React.FC<MainAppContainerProps> = ({
   const renderProtectedRoute = (route: AppRoute) => {
     if (route === 'portal_pacientes') {
       if (isAuthenticatedAs === 'paciente' || isAuthenticatedAs === 'admin') {
-        return <PortalPacienteView onAddPatientRecord={handleAddPatientRecord} onPurgePatientData={handlePurgePatientData} />;
+        return <PortalPacienteView />;
       }
       return <MockLogin targetRole="paciente" onSuccess={() => setIsAuthenticatedAs('paciente')} />;
     }

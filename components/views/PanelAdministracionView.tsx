@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { supabase } from '../../lib/supabase';
 import { AppRoute, PatientRecord } from '../../lib/types';
 import { triggerN8NWebhook } from '../../lib/store';
 import { AsonapaqLogo } from '../AsonapaqLogo';
@@ -48,12 +49,36 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
   onRouteChange,
   patients = []
 }) => {
-  const [activeTab, setActiveTab] = useState<'graficos' | 'datos'>('graficos');
+  const [activeTab, setActiveTab] = useState<'graficos' | 'datos' | 'solicitudes'>('graficos');
+  const [solicitudes, setSolicitudes] = useState<any[]>([]);
 
   // Interactive filters for charts
   const [chartFilterRegion, setChartFilterRegion] = useState('Todas');
   const [chartFilterEstado, setChartFilterEstado] = useState('Todos');
   const [chartFilterApoyo, setChartFilterApoyo] = useState('Todos');
+
+  useEffect(() => {
+    const fetchSolicitudes = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('solicitudes_apoyo')
+          .select('*, perfiles(nombre_completo, cedula, celular)')
+          .order('creado_en', { ascending: false });
+        if (data) setSolicitudes(data);
+      } catch(e) { console.error(e); }
+    };
+    fetchSolicitudes();
+  }, []);
+
+  const actualizarEstadoSolicitud = async (id: string, nuevoEstado: string) => {
+    try {
+      const { error } = await supabase.from('solicitudes_apoyo').update({ estado: nuevoEstado }).eq('id', id);
+      if (!error) {
+        setSolicitudes(solicitudes.map(s => s.id === id ? { ...s, estado: nuevoEstado } : s));
+      }
+    } catch(e) { console.error(e); }
+  };
+
 
   // Chart Data Processing
   const chartData = useMemo(() => {
