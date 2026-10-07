@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { AppRoute } from '../../lib/types';
 import { ShieldAlert, CheckCircle2, ChevronRight, ChevronLeft, User, Heart, Activity, Phone, Save } from 'lucide-react';
 import { AsonapaqLogo } from '../AsonapaqLogo';
+import { supabase } from '../../lib/supabase';
 
 interface FormularioRegistroViewProps {
   onRouteChange?: (route: AppRoute) => void;
