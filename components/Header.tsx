@@ -39,6 +39,7 @@ export const Header: React.FC<HeaderProps> = ({
     portal_voluntarios: 'Portal del Voluntario',
     panel_administracion: 'Panel Administración',
     auditoria_social: 'Auditoría Social',
+    registro: 'Registro Oficial',
     junta_tecnica: 'Junta Técnica ION'
   };
 
@@ -84,12 +85,13 @@ export const Header: React.FC<HeaderProps> = ({
         </button>
 
         <div className="flex items-center gap-1.5 sm:gap-2">
+          <button onClick={() => onRouteChange('registro')} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-sm shadow-emerald-900/50"><span>¡Únete!</span></button>
           <a
             href="tel:512-7000"
             className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-rose-950/80 hover:bg-rose-900 border border-rose-500/40 text-rose-200 text-xs font-semibold transition-all active:scale-95"
             title="Línea de Urgencia ION (512-7000)"
           >
-            <PhoneCall className="w-3.5 h-3.5 text-rose-400 animate-bounce" />
+            <PhoneCall className="w-3.5 h-3.5 text-rose-400" />
             <span>ION: 512-7000</span>
           </a>
 

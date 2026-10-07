@@ -6,6 +6,7 @@ import { INITIAL_PATIENTS, INITIAL_VOLUNTEER, INITIAL_POSTS } from '../lib/store
 import { Header } from './Header';
 import { BottomNav } from './BottomNav';
 import { Footer } from './Footer';
+import { FormularioRegistroView } from './views/FormularioRegistroView';
 import { InicioPublicaView } from './views/InicioPublicaView';
 import { PortalPacienteView } from './views/PortalPacienteView';
 import { PortalVoluntarioView } from './views/PortalVoluntarioView';
@@ -66,6 +67,9 @@ export const MainAppContainer: React.FC<MainAppContainerProps> = ({
         return <PortalVoluntarioView volunteer={volunteer} onUpdateVolunteer={handleUpdateVolunteer} />;
       }
       return <MockLogin targetRole="voluntario" onSuccess={() => setIsAuthenticatedAs('voluntario')} />;
+    }
+    if (route === 'registro') {
+      return <FormularioRegistroView onRouteChange={handleRouteChange} />;
     }
     if (route === 'panel_administracion') {
       if (isAuthenticatedAs === 'admin') {

@@ -5,7 +5,8 @@
   | 'portal_voluntarios'
   | 'panel_administracion'
   | 'auditoria_social'
-  | 'junta_tecnica';
+  | 'junta_tecnica'
+  | 'registro';
 
 export interface PatientRecord {
   id: string | number;
