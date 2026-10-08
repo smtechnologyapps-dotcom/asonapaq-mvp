@@ -1,3 +1,4 @@
+import { X, User, Heart } from 'lucide-react';
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
@@ -37,13 +38,7 @@ interface PanelAdministracionViewProps {
   patients?: PatientRecord[];
 }
 
-  const actualizarEstadoSolicitud = async (id: string, nuevoEstado: string) => {
-    await supabase.from('solicitudes_apoyo').update({ estado: nuevoEstado }).eq('id', id);
-    const { data } = await supabase.from('solicitudes_apoyo').select('*, perfiles(nombre_completo, cedula, celular)');
-    if (data) setSolicitudes(data);
-  };
-
-  const COLORS = ['#059669', '#0ea5e9', '#f59e0b', '#f43f5e', '#8b5cf6'];
+const COLORS = ['#059669', '#0ea5e9', '#f59e0b', '#f43f5e', '#8b5cf6'];
 const GRADIENTS = [
   { id: 'grad1', from: '#10b981', to: '#047857' },
   { id: 'grad2', from: '#38bdf8', to: '#0369a1' },
