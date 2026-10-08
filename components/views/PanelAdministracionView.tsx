@@ -5,6 +5,7 @@ import { supabase } from '../../lib/supabase';
 import { AppRoute, PatientRecord } from '../../lib/types';
 import { triggerN8NWebhook } from '../../lib/store';
 import { AsonapaqLogo } from '../AsonapaqLogo';
+import { User, Heart } from 'lucide-react';
 import {
   ClipboardList,
   Filter,
