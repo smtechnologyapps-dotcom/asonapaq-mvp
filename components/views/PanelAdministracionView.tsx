@@ -1,5 +1,4 @@
 'use client';
-import { X, User, Heart } from 'lucide-react';
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
