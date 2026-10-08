@@ -131,6 +131,7 @@ export const MainAppContainer: React.FC<MainAppContainerProps> = ({
             {currentRoute === 'inicio_publica' && <InicioPublicaView onRouteChange={handleRouteChange} />}
             {currentRoute === 'muro_comunicaciones' && <MuroComunidadView posts={posts} onUpdatePosts={handleUpdatePosts} />}
             {currentRoute === 'auditoria_social' && <AuditoriaSocialView onRouteChange={handleRouteChange} />}
+            {currentRoute === 'registro' && <FormularioRegistroView onRouteChange={handleRouteChange} />}
             {['portal_pacientes', 'portal_voluntarios', 'panel_administracion', 'registro'].includes(currentRoute) && renderProtectedRoute(currentRoute)}
           </motion.div>
         </AnimatePresence>
