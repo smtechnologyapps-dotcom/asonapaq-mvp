@@ -1,12 +1,10 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 let panel = fs.readFileSync('components/views/PanelAdministracionView.tsx', 'utf8');
 
-// I will clear everything between \        </div>\n      ) : (\ and the end of the file, replacing it with the new tabs.
-
 const fixRegex = /<div className="max-w-md">[\s\S]*/;
 
-const fixedEnd = \
+const fixedEnd = `
       ) : (
         <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
           <div className="mb-4 flex items-center justify-between">
@@ -32,7 +30,11 @@ const fixedEnd = \
                     <td className="p-4 text-sm font-medium text-slate-900">{s.tipo_apoyo}</td>
                     <td className="p-4 text-sm text-slate-500">{new Date(s.created_at).toLocaleDateString()}</td>
                     <td className="p-4 text-sm">
-                      <span className={\\\px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider \\\\}>
+                      <span className={\`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider \${
+                        s.estado === 'Aprobado' ? 'bg-emerald-100 text-emerald-800' : 
+                        s.estado === 'Rechazado' ? 'bg-rose-100 text-rose-800' : 
+                        s.estado === 'Completado' ? 'bg-sky-100 text-sky-800' : 'bg-amber-100 text-amber-800'
+                      }\`}>
                         {s.estado}
                       </span>
                     </td>
@@ -57,7 +59,7 @@ const fixedEnd = \
     </div>
   );
 };
-\;
+`;
 
 panel = panel.replace(fixRegex, fixedEnd);
 
