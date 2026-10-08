@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { X, User, Heart, supabase } from '../../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import { AppRoute, PatientRecord } from '../../lib/types';
 import { triggerN8NWebhook } from '../../lib/store';
 import { AsonapaqLogo } from '../AsonapaqLogo';
