@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { supabase } from '../../lib/supabase';
+import { X, User, Heart, supabase } from '../../lib/supabase';
 import { AppRoute, PatientRecord } from '../../lib/types';
 import { triggerN8NWebhook } from '../../lib/store';
 import { AsonapaqLogo } from '../AsonapaqLogo';
@@ -50,8 +50,9 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
   patients = []
 }) => {
   const [activeTab, setActiveTab] = useState<'graficos' | 'datos' | 'solicitudes'>('graficos');
-    const [solicitudes, setSolicitudes] = useState<any[]>([]);
+      const [solicitudes, setSolicitudes] = useState<any[]>([]);
   const [directorios, setDirectorios] = useState<any[]>([]);
+  const [selectedUser, setSelectedUser] = useState<any>(null); // For the modal
 
   // Interactive filters for charts
   const [chartFilterRegion, setChartFilterRegion] = useState('Todas');
@@ -66,8 +67,9 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
       if (data) setSolicitudes(data);
     };
     
-    const fetchDirectorios = async () => {
-      const { data } = await supabase.from('perfiles').select('*').order('created_at', { ascending: false });
+        const fetchDirectorios = async () => {
+      // Fetch everything joined
+      const { data } = await supabase.from('perfiles').select('*, datos_medicos_pacientes(*), datos_voluntarios(*)').order('created_at', { ascending: false });
       if (data) setDirectorios(data);
     };
     
