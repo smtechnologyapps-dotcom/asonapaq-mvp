@@ -1474,7 +1474,7 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
 
         <div className="flex items-center justify-between text-slate-500 text-xs pt-1">
 
-          <span className="font-semibold text-slate-900">Ã¢â‚¬â€ Carmen Elena Morales</span>
+          <span className="font-semibold text-slate-900">—â€ Carmen Elena Morales</span>
 
           <span>Voluntaria desde 2021</span>
 
