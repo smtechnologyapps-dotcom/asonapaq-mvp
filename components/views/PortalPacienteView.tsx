@@ -9,6 +9,7 @@ import { PackagePlus, Clock, FileText, CheckCircle2, AlertTriangle, Send, X, Log
 export const PortalPacienteView = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
   const [solicitudes, setSolicitudes] = useState<any[]>([]);
+  const [showWelcome, setShowWelcome] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
   const [showForm, setShowForm] = useState(false);
@@ -81,6 +82,25 @@ export const PortalPacienteView = () => {
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 space-y-6">
+
+      {showWelcome && (
+        <motion.div initial={{opacity: 0, y: -10}} animate={{opacity: 1, y: 0}} className="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl mb-6 shadow-sm flex justify-between items-center relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-100 rounded-full blur-3xl opacity-50 -mr-10 -mt-10"></div>
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="bg-emerald-500 text-white p-3 rounded-full shadow-md">
+               <HeartHandshake size={24} />
+            </div>
+            <div>
+              <h4 className="text-emerald-900 font-black text-lg md:text-xl">¡Bienvenido/a a tu portal, {userProfile.nombre_completo.split(' ')[0]}!</h4>
+              <p className="text-emerald-700 text-sm font-medium">Estamos aquí para apoyarte. Desde este panel puedes gestionar tus solicitudes y revisar tu expediente.</p>
+            </div>
+          </div>
+          <button onClick={() => setShowWelcome(false)} className="text-emerald-400 hover:text-emerald-600 transition-colors z-10 p-2">
+            <X size={20} />
+          </button>
+        </motion.div>
+      )}
+
       <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-6 shadow-xl relative overflow-hidden">
         <div className="absolute top-0 right-0 p-8 opacity-10">
           <AsonapaqLogo className="w-48 h-48" />

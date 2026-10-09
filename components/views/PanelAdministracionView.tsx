@@ -5,8 +5,10 @@ import { supabase } from '../../lib/supabase';
 import { AppRoute, PatientRecord } from '../../lib/types';
 import { triggerN8NWebhook } from '../../lib/store';
 import { AsonapaqLogo } from '../AsonapaqLogo';
+import { motion } from 'motion/react';
 import { User, Heart } from 'lucide-react';
 import {
+  ShieldCheck,
   ClipboardList,
   Filter,
   FileSpreadsheet,
