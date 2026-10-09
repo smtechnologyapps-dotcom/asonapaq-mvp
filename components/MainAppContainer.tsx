@@ -34,6 +34,38 @@ export const MainAppContainer: React.FC<MainAppContainerProps> = ({
   const [posts, setPosts] = useState<CommunityPost[]>(INITIAL_POSTS);
 
 
+
+  React.useEffect(() => {
+    // Escuchar cambios reales de sesión en Supabase
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        const rol = session.user.user_metadata?.rol;
+        if (rol) {
+          setIsAuthenticatedAs(rol);
+          if (rol === 'admin') setCurrentRoute('panel_administracion');
+          else if (rol === 'voluntario') setCurrentRoute('portal_voluntarios');
+          else setCurrentRoute('portal_pacientes');
+        }
+      } else if (event === 'SIGNED_OUT') {
+        setIsAuthenticatedAs(null);
+        setCurrentRoute('inicio_publica');
+      }
+    });
+
+    // Verificar sesión inicial
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        const rol = session.user.user_metadata?.rol;
+        if (rol) {
+          setIsAuthenticatedAs(rol);
+          if (rol === 'admin' && currentRoute !== 'panel_administracion') setCurrentRoute('panel_administracion');
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   React.useEffect(() => {
     if (isAuthenticatedAs === 'admin') {
       const fetchSupabasePatients = async () => {
