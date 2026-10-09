@@ -8,6 +8,7 @@ import { AsonapaqLogo } from '../AsonapaqLogo';
 import { motion } from 'motion/react';
 import { User, Heart } from 'lucide-react';
 import {
+  Search,
   ShieldCheck,
   ClipboardList,
   Filter,
@@ -61,6 +62,22 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
   const [chartFilterRegion, setChartFilterRegion] = useState('Todas');
   const [chartFilterEstado, setChartFilterEstado] = useState('Todos');
   const [chartFilterApoyo, setChartFilterApoyo] = useState('Todos');
+  const [filtroDirectorio, setFiltroDirectorio] = useState<'todos' | 'paciente' | 'voluntario'>('todos');
+  const [busquedaDirectorio, setBusquedaDirectorio] = useState('');
+
+  const countPacientes = useMemo(() => directorios.filter(d => d.rol === 'paciente').length, [directorios]);
+  const countVoluntarios = useMemo(() => directorios.filter(d => d.rol === 'voluntario').length, [directorios]);
+
+  const directoriosFiltrados = useMemo(() => {
+    return directorios.filter(u => {
+      const matchRol = filtroDirectorio === 'todos' || u.rol === filtroDirectorio;
+      const matchBusqueda = !busquedaDirectorio.trim() ||
+        (u.nombre_completo && u.nombre_completo.toLowerCase().includes(busquedaDirectorio.toLowerCase())) ||
+        (u.cedula && u.cedula.toLowerCase().includes(busquedaDirectorio.toLowerCase())) ||
+        (u.celular && u.celular.includes(busquedaDirectorio));
+      return matchRol && matchBusqueda;
+    });
+  }, [directorios, filtroDirectorio, busquedaDirectorio]);
 
   useEffect(() => {
         const fetchSolicitudes = async () => {
@@ -370,11 +387,78 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
           </div>
         </div>
       ) : activeTab === 'datos' ? (
-        <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
-          <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-lg font-black text-slate-900">Directorio de Pacientes y Voluntarios</h3>
+        <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden space-y-5">
+          {/* Header con Controles y Selector de Tabla */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div>
+              <h3 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                <Users className="w-6 h-6 text-emerald-600" />
+                Directorio Oficial ({directorios.length} Registros)
+              </h3>
+              <p className="text-xs text-slate-500 mt-1 font-medium">
+                Padrón general registrado en la plataforma ASONAPAQ.
+              </p>
+            </div>
+
+            {/* Selector de Tabla: Pacientes vs Voluntarios */}
+            <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-2xl">
+              <button
+                onClick={() => setFiltroDirectorio('todos')}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all ${
+                  filtroDirectorio === 'todos' 
+                    ? 'bg-white shadow text-slate-900' 
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                Todos ({directorios.length})
+              </button>
+              <button
+                onClick={() => setFiltroDirectorio('paciente')}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 ${
+                  filtroDirectorio === 'paciente' 
+                    ? 'bg-emerald-600 shadow text-white' 
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <HeartHandshake className="w-3.5 h-3.5" />
+                Pacientes ({countPacientes})
+              </button>
+              <button
+                onClick={() => setFiltroDirectorio('voluntario')}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 ${
+                  filtroDirectorio === 'voluntario' 
+                    ? 'bg-sky-600 shadow text-white' 
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                Voluntarios ({countVoluntarios})
+              </button>
+            </div>
           </div>
-          <div className="overflow-x-auto">
+
+          {/* Barra de Búsqueda Rápida */}
+          <div className="flex items-center gap-3 bg-slate-50 p-2.5 rounded-2xl border border-slate-200/80">
+            <Search className="w-4 h-4 text-slate-400 ml-2" />
+            <input
+              type="text"
+              value={busquedaDirectorio}
+              onChange={(e) => setBusquedaDirectorio(e.target.value)}
+              placeholder="Buscar por nombre, cédula o teléfono..."
+              className="bg-transparent border-none text-xs font-bold text-slate-800 placeholder-slate-400 focus:outline-none w-full"
+            />
+            {busquedaDirectorio && (
+              <button 
+                onClick={() => setBusquedaDirectorio('')}
+                className="text-xs text-slate-400 hover:text-slate-600 font-bold px-2"
+              >
+                Limpiar
+              </button>
+            )}
+          </div>
+
+          {/* Tabla de Registros */}
+          <div className="overflow-x-auto rounded-xl border border-slate-100">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50 border-b border-slate-100 text-xs uppercase tracking-wider text-slate-500 font-bold">
@@ -383,38 +467,57 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
                   <th className="p-4">Rol</th>
                   <th className="p-4">Celular</th>
                   <th className="p-4">Región</th>
-                  <th className="p-4">Fecha Reg.</th>
+                  <th className="p-4 text-right">Acción</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {directorios.length > 0 ? directorios.map((u, i) => (
-                  <tr key={i} className="hover:bg-slate-50 transition-colors">
-                    <td className="p-4 text-sm font-bold text-slate-700">{u.cedula}</td>
-                    <td className="p-4 text-sm font-medium text-slate-900">{u.nombre_completo}</td>
+                {directoriosFiltrados.length > 0 ? directoriosFiltrados.map((u, i) => (
+                  <tr key={u.id || i} className="hover:bg-emerald-50/40 transition-colors">
+                    <td className="p-4 text-sm font-bold text-slate-800">{u.cedula}</td>
+                    <td className="p-4 text-sm font-bold text-slate-900">
+                      {u.nombre_completo && u.nombre_completo !== 'Sin Nombre' ? (
+                        u.nombre_completo
+                      ) : (
+                        <span className="text-slate-400 italic">No registrado</span>
+                      )}
+                    </td>
                     <td className="p-4 text-sm">
-                      <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                        u.rol === 'paciente' ? 'bg-emerald-100 text-emerald-800' : 
-                        u.rol === 'voluntario' ? 'bg-sky-100 text-sky-800' : 'bg-slate-200 text-slate-800'
+                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                        u.rol === 'paciente' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 
+                        u.rol === 'voluntario' ? 'bg-sky-100 text-sky-800 border border-sky-200' : 
+                        'bg-purple-100 text-purple-800 border border-purple-200'
                       }`}>
                         {u.rol}
                       </span>
                     </td>
-                    <td className="p-4 text-sm text-slate-600">{u.celular || 'N/A'}</td>
-                    <td className="p-4 text-sm text-slate-600">{u.provincia || 'N/A'}</td>
-                    <td className="p-4 text-sm text-slate-500 flex items-center justify-between">
-                      {new Date(u.creado_en || u.created_at || new Date()).toLocaleDateString()}
-                      <button onClick={() => setSelectedUser(u)} className="ml-4 px-3 py-1 bg-slate-900 text-white rounded-lg text-xs font-bold hover:bg-slate-800">Ver Perfil</button>
+                    <td className="p-4 text-sm text-slate-600 font-medium">{u.celular || 'N/A'}</td>
+                    <td className="p-4 text-sm text-slate-600 font-medium">{u.provincia || 'Panamá'}</td>
+                    <td className="p-4 text-sm text-right">
+                      <button 
+                        onClick={() => setSelectedUser(u)} 
+                        className="px-3.5 py-1.5 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-colors shadow-sm"
+                      >
+                        Ver Expediente
+                      </button>
                     </td>
                   </tr>
                 )) : (
-                  <tr><td colSpan={6} className="p-8 text-center text-slate-500 font-medium">Cargando directorio o no hay registros disponibles.</td></tr>
+                  <tr>
+                    <td colSpan={6} className="p-12 text-center text-slate-500 font-medium">
+                      {busquedaDirectorio ? 'No se encontraron resultados para la búsqueda.' : 'Cargando directorio o no hay registros disponibles.'}
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>
           </div>
+
+          <div className="flex justify-between items-center text-xs text-slate-400 font-medium px-2">
+            <span>Mostrando {directoriosFiltrados.length} de {directorios.length} registros</span>
+            <span>Padrón General ASONAPAQ</span>
+          </div>
         </div>
-      ) : (
-        <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+      ) : (<div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-lg font-black text-slate-900">Solicitudes de Apoyo</h3>
           </div>
