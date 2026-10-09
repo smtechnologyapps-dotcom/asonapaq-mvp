@@ -34,6 +34,7 @@ export const AuditoriaSocialView: React.FC<AuditoriaSocialViewProps> = ({
         downloaded_at: new Date().toISOString()
       }
     );
+    window.open('/informe_auditoria_social_asonapaq.pdf', '_blank');
     setDownloadSuccess(true);
     setTimeout(() => setDownloadSuccess(false), 5000);
   };
