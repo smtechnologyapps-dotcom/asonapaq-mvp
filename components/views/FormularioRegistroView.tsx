@@ -38,11 +38,17 @@ export const FormularioRegistroView: React.FC<FormularioRegistroViewProps> = ({ 
     setIsSubmitting(true);
     try {
       // 1. Crear usuario en Supabase Auth
+      const syntheticEmail = `${formData.cedula}@asonapaq.local`;
       const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: formData.email || `${formData.cedula}@asonapaq.local`,
+        email: syntheticEmail,
         password: formData.password,
         options: {
-          data: { nombre_completo: formData.nombre, cedula: formData.cedula, rol: userType }
+          data: { 
+            nombre_completo: formData.nombre, 
+            cedula: formData.cedula, 
+            rol: userType,
+            correo_real: formData.email || null
+          }
         }
       });
       if (authError) throw authError;
