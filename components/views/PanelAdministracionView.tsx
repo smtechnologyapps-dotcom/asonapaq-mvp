@@ -72,7 +72,9 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
     
         const fetchDirectorios = async () => {
       // Fetch everything joined
-      const { data } = await supabase.from('perfiles').select('*, datos_medicos_pacientes(*), datos_voluntarios(*)').order('created_at', { ascending: false });
+      const { data, error } = await supabase.from('perfiles').select('*, datos_medicos_pacientes(*), datos_voluntarios(*)').order('creado_en', { ascending: false });
+      console.error('FETCH DIRECTORIOS ERROR:', error);
+      console.log('FETCH DIRECTORIOS DATA:', data);
       if (data) setDirectorios(data);
     };
     
