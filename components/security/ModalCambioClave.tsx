@@ -29,6 +29,19 @@ export const ModalCambioClave: React.FC<ModalCambioClaveProps> = ({
 
   if (!isOpen) return null;
 
+  // Cálculo de robustez de contraseña sugerido por auditoría Nemotron
+  const getPasswordStrength = (pass: string) => {
+    let score = 0;
+    if (pass.length >= 6) score++;
+    if (pass.length >= 8) score++;
+    if (/[A-Z]/.test(pass) && /[a-z]/.test(pass)) score++;
+    if (/\d/.test(pass)) score++;
+    if (/[^A-Za-z0-9]/.test(pass)) score++;
+    return score; // 0 - 5
+  };
+
+  const strength = getPasswordStrength(password);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
@@ -128,9 +141,20 @@ export const ModalCambioClave: React.FC<ModalCambioClaveProps> = ({
 
           {/* Nueva Contraseña */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 uppercase">
-              Nueva Contraseña *
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-slate-700 uppercase">
+                Nueva Contraseña *
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
+                aria-pressed={showPassword}
+              >
+                {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                <span>{showPassword ? 'Ocultar' : 'Ver clave'}</span>
+              </button>
+            </div>
             <div className="relative">
               <input
                 required
@@ -147,17 +171,44 @@ export const ModalCambioClave: React.FC<ModalCambioClaveProps> = ({
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
                 title={showPassword ? 'Ocultar contraseña' : 'Ver lo que estoy escribiendo'}
+                aria-label={showPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
             </div>
+
+            {/* Barra Visual de Fortaleza de Contraseña */}
+            {password.length > 0 && (
+              <div className="space-y-1 pt-1">
+                <div className="flex gap-1 h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                  <div className={`h-full rounded-full transition-all ${strength >= 1 ? 'w-1/4 bg-rose-500' : 'w-0'}`} />
+                  <div className={`h-full rounded-full transition-all ${strength >= 2 ? 'w-1/4 bg-amber-500' : 'w-0'}`} />
+                  <div className={`h-full rounded-full transition-all ${strength >= 3 ? 'w-1/4 bg-sky-500' : 'w-0'}`} />
+                  <div className={`h-full rounded-full transition-all ${strength >= 4 ? 'w-1/4 bg-emerald-500' : 'w-0'}`} />
+                </div>
+                <p className="text-[10px] text-slate-500 font-medium text-right">
+                  {strength <= 1 ? 'Muy débil' : strength === 2 ? 'Aceptable' : strength === 3 ? 'Buena' : 'Muy segura'}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Confirmar Contraseña */}
           <div className="space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 uppercase">
-              Confirmar Nueva Contraseña *
-            </label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-slate-700 uppercase">
+                Confirmar Nueva Contraseña *
+              </label>
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
+                aria-pressed={showConfirmPassword}
+              >
+                {showConfirmPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                <span>{showConfirmPassword ? 'Ocultar' : 'Ver clave'}</span>
+              </button>
+            </div>
             <div className="relative">
               <input
                 required
@@ -174,6 +225,7 @@ export const ModalCambioClave: React.FC<ModalCambioClaveProps> = ({
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
                 title={showConfirmPassword ? 'Ocultar contraseña' : 'Ver lo que estoy escribiendo'}
+                aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
               >
                 {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
