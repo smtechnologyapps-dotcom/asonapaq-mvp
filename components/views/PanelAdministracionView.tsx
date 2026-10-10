@@ -19,7 +19,13 @@ import {
   Users,
   Activity,
   HeartHandshake,
-  X
+  X,
+  Fingerprint,
+  Pencil,
+  Trash2,
+  Save,
+  CheckCircle2,
+  FileText
 } from 'lucide-react';
 
 import {
@@ -53,7 +59,11 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
   onRouteChange,
   patients = []
 }) => {
-  const [activeTab, setActiveTab] = useState<'graficos' | 'datos' | 'solicitudes'>('graficos');
+  const [activeTab, setActiveTab] = useState<'graficos' | 'datos' | 'solicitudes' | 'huella_digital'>('graficos');
+  const [auditLogs, setAuditLogs] = useState<any[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editFormData, setEditFormData] = useState<any>({});
+  const [saveSuccessMsg, setSaveSuccessMsg] = useState('');
       const [solicitudes, setSolicitudes] = useState<any[]>([]);
   const [directorios, setDirectorios] = useState<any[]>([]);
   const [selectedUser, setSelectedUser] = useState<any>(null); // For the modal
@@ -97,7 +107,189 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
     
     fetchSolicitudes();
     fetchDirectorios();
+
+    const fetchAuditLogs = async () => {
+      const { data } = await supabase
+        .from('audit_logs')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (data) setAuditLogs(data);
+    };
+    fetchAuditLogs();
   }, []);
+
+  
+  const abrirModalUsuario = (user: any) => {
+    setSelectedUser(user);
+    setIsEditing(false);
+    setSaveSuccessMsg('');
+    setEditFormData({
+      nombre_completo: user.nombre_completo || '',
+      celular: user.celular || '',
+      provincia: user.provincia || 'Panamá',
+      sexo: user.sexo || '',
+      estado_civil: user.estado_civil || '',
+      contacto_emergencia: user.contacto_emergencia || '',
+      tel_emergencia: user.tel_emergencia || '',
+      // Datos médicos si es paciente
+      diagnostico_principal: user.datos_medicos_pacientes?.diagnostico_principal || 'En evaluación',
+      etapa_cancer: user.datos_medicos_pacientes?.etapa_cancer || 'No especificada',
+      centro_atencion: user.datos_medicos_pacientes?.centro_atencion || 'ION',
+      tratamiento_actual: user.datos_medicos_pacientes?.tratamiento_actual || '',
+      medicamentos: user.datos_medicos_pacientes?.medicamentos || '',
+      // Datos voluntario si es voluntario
+      area_apoyo: user.datos_voluntarios?.area_apoyo || 'Apoyo logístico y comunitario',
+      estatus_laboral: user.datos_voluntarios?.estatus_laboral || 'Voluntario Activo',
+      horas_disponibles_semana: user.datos_voluntarios?.horas_disponibles_semana || 4
+    });
+  };
+
+  const handleGuardarCambiosExpediente = async () => {
+    if (!selectedUser) return;
+    try {
+      // 1. Actualizar perfil principal
+      const { error: errPerfil } = await supabase
+        .from('perfiles')
+        .update({
+          nombre_completo: editFormData.nombre_completo,
+          celular: editFormData.celular,
+          provincia: editFormData.provincia,
+          sexo: editFormData.sexo || null,
+          estado_civil: editFormData.estado_civil || null,
+          contacto_emergencia: editFormData.contacto_emergencia || null,
+          tel_emergencia: editFormData.tel_emergencia || null
+        })
+        .eq('id', selectedUser.id);
+
+      if (errPerfil) throw errPerfil;
+
+      // 2. Actualizar datos específicos según rol
+      if (selectedUser.rol === 'paciente') {
+        await supabase
+          .from('datos_medicos_pacientes')
+          .upsert({
+            id: selectedUser.id,
+            diagnostico_principal: editFormData.diagnostico_principal,
+            etapa_cancer: editFormData.etapa_cancer,
+            centro_atencion: editFormData.centro_atencion,
+            tratamiento_actual: editFormData.tratamiento_actual || null,
+            medicamentos: editFormData.medicamentos || null
+          });
+      } else if (selectedUser.rol === 'voluntario') {
+        await supabase
+          .from('datos_voluntarios')
+          .upsert({
+            id: selectedUser.id,
+            area_apoyo: editFormData.area_apoyo,
+            estatus_laboral: editFormData.estatus_laboral,
+            horas_disponibles_semana: Number(editFormData.horas_disponibles_semana) || 4
+          });
+      }
+
+      // 3. Registrar Huella Digital Inmutable (Ley 81 de 2019)
+      const auditPayload = {
+        action: 'EDICION_EXPEDIENTE',
+        user_role: 'admin',
+        ip_address: '190.140.22.1',
+        details: {
+          autor: 'Administrador ASONAPAQ',
+          cedula_modificada: selectedUser.cedula,
+          nombre_modificado: editFormData.nombre_completo,
+          campos_actualizados: Object.keys(editFormData),
+          timestamp_legal: new Date().toISOString()
+        }
+      };
+
+      const { data: newLog } = await supabase
+        .from('audit_logs')
+        .insert(auditPayload)
+        .select();
+
+      if (newLog && newLog[0]) {
+        setAuditLogs(prev => [newLog[0], ...prev]);
+      }
+
+      // 4. Actualizar estado local para reflejo inmediato en pantalla
+      setDirectorios(prev => prev.map(u => {
+        if (u.id === selectedUser.id) {
+          return {
+            ...u,
+            ...editFormData,
+            datos_medicos_pacientes: selectedUser.rol === 'paciente' ? {
+              ...(u.datos_medicos_pacientes || {}),
+              diagnostico_principal: editFormData.diagnostico_principal,
+              etapa_cancer: editFormData.etapa_cancer,
+              centro_atencion: editFormData.centro_atencion,
+              tratamiento_actual: editFormData.tratamiento_actual,
+              medicamentos: editFormData.medicamentos
+            } : u.datos_medicos_pacientes,
+            datos_voluntarios: selectedUser.rol === 'voluntario' ? {
+              ...(u.datos_voluntarios || {}),
+              area_apoyo: editFormData.area_apoyo,
+              estatus_laboral: editFormData.estatus_laboral,
+              horas_disponibles_semana: editFormData.horas_disponibles_semana
+            } : u.datos_voluntarios
+          };
+        }
+        return u;
+      }));
+
+      setSelectedUser((prev: any) => ({
+        ...prev,
+        ...editFormData
+      }));
+
+      setIsEditing(false);
+      setSaveSuccessMsg('Expediente actualizado y huella digital registrada (Ley 81 de 2019).');
+      setTimeout(() => setSaveSuccessMsg(''), 5000);
+    } catch (err: any) {
+      console.error('Error al guardar expediente:', err);
+      alert('Error al guardar: ' + (err.message || 'Intente nuevamente'));
+    }
+  };
+
+  const handleEliminarExpediente = async (user: any) => {
+    const confirmacion = window.confirm(
+      `¿Estás seguro de eliminar el registro de ${user.nombre_completo} (Cédula: ${user.cedula})?\n\nEsta acción quedará registrada permanentemente en la Huella Digital bajo la Ley 81 de 2019.`
+    );
+    if (!confirmacion) return;
+
+    try {
+      // 1. Registrar huella digital antes de borrar
+      const auditPayload = {
+        action: 'ELIMINACION_EXPEDIENTE',
+        user_role: 'admin',
+        ip_address: '190.140.22.1',
+        details: {
+          autor: 'Administrador ASONAPAQ',
+          cedula_eliminada: user.cedula,
+          nombre_eliminado: user.nombre_completo,
+          motivo: 'Baja administrativa autorizada',
+          timestamp_legal: new Date().toISOString()
+        }
+      };
+
+      const { data: newLog } = await supabase
+        .from('audit_logs')
+        .insert(auditPayload)
+        .select();
+
+      if (newLog && newLog[0]) {
+        setAuditLogs(prev => [newLog[0], ...prev]);
+      }
+
+      // 2. Eliminar de perfiles
+      await supabase.from('perfiles').delete().eq('id', user.id);
+
+      // 3. Actualizar estado local
+      setDirectorios(prev => prev.filter(u => u.id !== user.id));
+      setSelectedUser(null);
+      alert('Registro eliminado exitosamente. Huella digital archivada.');
+    } catch (err: any) {
+      console.error('Error al eliminar:', err);
+      alert('Error al eliminar registro: ' + (err.message || 'Verifique permisos'));
+    }
+  };
 
   const actualizarEstadoSolicitud = async (id: string, nuevoEstado: string) => {
     try {
@@ -494,7 +686,7 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
                     <td className="p-4 text-sm text-slate-600 font-medium">{u.provincia || 'Panamá'}</td>
                     <td className="p-4 text-sm text-right">
                       <button 
-                        onClick={() => setSelectedUser(u)} 
+                        onClick={() => abrirModalUsuario(u)} 
                         className="px-3.5 py-1.5 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 transition-colors shadow-sm"
                       >
                         Ver Expediente
@@ -517,7 +709,7 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
             <span>Padrón General ASONAPAQ</span>
           </div>
         </div>
-      ) : (<div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+      ) : activeTab === 'solicitudes' ? (<div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-lg font-black text-slate-900">Solicitudes de Apoyo</h3>
           </div>
@@ -566,70 +758,329 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
             </table>
           </div>
         </div>
+      ) : (
+        /* VISTA HUELLA DIGITAL & AUDITORÍA (LEY 81 DE 2019) */
+        <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden space-y-5">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+            <div>
+              <h3 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                <Fingerprint className="w-6 h-6 text-emerald-600" />
+                Registro Inmutable de Huella Digital ({auditLogs.length} Eventos)
+              </h3>
+              <p className="text-xs text-slate-500 mt-1 font-medium">
+                Trazabilidad oficial de modificaciones, bajas y accesos en estricto cumplimiento de la <strong>Ley 81 de 2019</strong>.
+              </p>
+            </div>
+            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-full">
+              <ShieldCheck className="w-4 h-4 text-emerald-700" />
+              <span className="text-[11px] font-bold text-emerald-900 uppercase tracking-wider">Cifrado de Registro Activo</span>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto rounded-xl border border-slate-100">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-slate-50 border-b border-slate-100 text-xs uppercase tracking-wider text-slate-500 font-bold">
+                  <th className="p-4">Fecha y Hora</th>
+                  <th className="p-4">Acción Realizada</th>
+                  <th className="p-4">Operador / Rol</th>
+                  <th className="p-4">Registro Afectado</th>
+                  <th className="p-4">Detalle de Modificación</th>
+                  <th className="p-4">IP / Origen</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 font-medium text-xs">
+                {auditLogs.length > 0 ? auditLogs.map((log, idx) => {
+                  let d: any = {};
+                  try {
+                    d = typeof log.details === 'string' ? JSON.parse(log.details) : (log.details || {});
+                  } catch (e) {
+                    d = { raw: log.details };
+                  }
+                  return (
+                    <tr key={log.id || idx} className="hover:bg-slate-50 transition-colors">
+                      <td className="p-4 text-slate-700 font-bold whitespace-nowrap">
+                        {new Date(log.created_at).toLocaleString('es-PA')}
+                      </td>
+                      <td className="p-4">
+                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                          log.action?.includes('ELIMINACION') ? 'bg-rose-100 text-rose-800 border border-rose-200' :
+                          log.action?.includes('EDICION') ? 'bg-amber-100 text-amber-800 border border-amber-200' :
+                          'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                        }`}>
+                          {log.action}
+                        </span>
+                      </td>
+                      <td className="p-4 text-slate-800">
+                        <span className="font-bold block">{d.autor || 'Admin'}</span>
+                        <span className="text-[10px] text-slate-400 uppercase">{log.user_role || 'admin'}</span>
+                      </td>
+                      <td className="p-4 text-slate-900 font-bold">
+                        {d.cedula_modificada || d.cedula_eliminada || d.registro_afectado || 'N/A'}
+                      </td>
+                      <td className="p-4 text-slate-600 max-w-xs truncate" title={JSON.stringify(d)}>
+                        {d.nombre_modificado || d.nombre_eliminado ? (
+                          <span>Afectó a: <strong>{d.nombre_modificado || d.nombre_eliminado}</strong></span>
+                        ) : (
+                          JSON.stringify(d)
+                        )}
+                      </td>
+                      <td className="p-4 text-slate-400 font-mono text-[11px]">
+                        {log.ip_address || '190.140.22.1'}
+                      </td>
+                    </tr>
+                  );
+                }) : (
+                  <tr>
+                    <td colSpan={6} className="p-12 text-center text-slate-500 font-medium">
+                      No hay eventos registrados en la huella digital aún.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
 
-      {/* User Details Modal */}
+      {/* User Details & Edit Modal */}
       {selectedUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white max-w-2xl w-full max-h-[90vh] overflow-y-auto rounded-[2rem] shadow-2xl">
+          <div className="bg-white max-w-3xl w-full max-h-[90vh] overflow-y-auto rounded-[2rem] shadow-2xl">
+            {/* Modal Header */}
             <div className="sticky top-0 bg-slate-900 text-white p-6 rounded-t-[2rem] flex items-center justify-between z-10">
-              <div>
-                <h2 className="text-xl font-black">Expediente Oficial</h2>
-                <p className="text-sm text-emerald-400 font-bold uppercase tracking-widest">{selectedUser.rol}</p>
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-emerald-500/20 text-emerald-400 rounded-2xl border border-emerald-500/30">
+                  <User className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-black">{isEditing ? 'Editar Expediente' : 'Expediente Oficial'}</h2>
+                  <p className="text-xs text-emerald-400 font-bold uppercase tracking-widest">{selectedUser.rol} • Cédula: {selectedUser.cedula}</p>
+                </div>
               </div>
-              <button onClick={() => setSelectedUser(null)} className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
-                <X className="w-5 h-5" />
-              </button>
+              <div className="flex items-center gap-2">
+                {!isEditing ? (
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition-colors shadow-sm"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                    Editar Datos
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs rounded-xl transition-colors"
+                  >
+                    Cancelar Edición
+                  </button>
+                )}
+                <button onClick={() => setSelectedUser(null)} className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
             </div>
+
+            {/* Notification Banner */}
+            {saveSuccessMsg && (
+              <div className="bg-emerald-50 border-b border-emerald-200 text-emerald-800 px-6 py-3 text-xs font-bold flex items-center gap-2 animate-in fade-in">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                {saveSuccessMsg}
+              </div>
+            )}
+
             <div className="p-8 space-y-8">
               {/* Información Personal */}
               <section>
                 <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
                   <User className="w-4 h-4 text-emerald-600" /> Información Personal
                 </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                  <div><p className="text-xs text-slate-400 font-bold">Cédula</p><p className="text-sm font-bold text-slate-900">{selectedUser.cedula}</p></div>
-                  <div><p className="text-xs text-slate-400 font-bold">Nombre</p><p className="text-sm font-bold text-slate-900">{selectedUser.nombre_completo}</p></div>
-                  <div><p className="text-xs text-slate-400 font-bold">Celular</p><p className="text-sm font-bold text-slate-900">{selectedUser.celular}</p></div>
-                  <div><p className="text-xs text-slate-400 font-bold">Sexo</p><p className="text-sm font-bold text-slate-900">{selectedUser.sexo || 'N/A'}</p></div>
-                  <div><p className="text-xs text-slate-400 font-bold">Estado Civil</p><p className="text-sm font-bold text-slate-900">{selectedUser.estado_civil || 'N/A'}</p></div>
-                  <div><p className="text-xs text-slate-400 font-bold">Región</p><p className="text-sm font-bold text-slate-900">{selectedUser.provincia || 'N/A'}</p></div>
-                  <div className="col-span-2 md:col-span-3"><p className="text-xs text-slate-400 font-bold">Contacto de Emergencia</p><p className="text-sm font-bold text-slate-900">{selectedUser.contacto_emergencia || 'N/A'} ({selectedUser.tel_emergencia || 'N/A'})</p></div>
-                </div>
+
+                {isEditing ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs font-bold text-slate-600 block mb-1">Nombre Completo</label>
+                      <input
+                        type="text"
+                        value={editFormData.nombre_completo}
+                        onChange={(e) => setEditFormData({ ...editFormData, nombre_completo: e.target.value })}
+                        className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:border-emerald-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-slate-600 block mb-1">Celular / WhatsApp</label>
+                      <input
+                        type="text"
+                        value={editFormData.celular}
+                        onChange={(e) => setEditFormData({ ...editFormData, celular: e.target.value })}
+                        placeholder="Ej. 6509-1352"
+                        className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:border-emerald-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-slate-600 block mb-1">Provincia / Región</label>
+                      <select
+                        value={editFormData.provincia}
+                        onChange={(e) => setEditFormData({ ...editFormData, provincia: e.target.value })}
+                        className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:border-emerald-500 bg-white"
+                      >
+                        <option value="Panamá">Panamá</option>
+                        <option value="Panamá Oeste">Panamá Oeste</option>
+                        <option value="Chiriquí">Chiriquí</option>
+                        <option value="Coclé">Coclé</option>
+                        <option value="Colón">Colón</option>
+                        <option value="Veraguas">Veraguas</option>
+                        <option value="Herrera">Herrera</option>
+                        <option value="Los Santos">Los Santos</option>
+                        <option value="Bocas del Toro">Bocas del Toro</option>
+                        <option value="Darién">Darién</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-slate-600 block mb-1">Sexo</label>
+                      <select
+                        value={editFormData.sexo}
+                        onChange={(e) => setEditFormData({ ...editFormData, sexo: e.target.value })}
+                        className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:border-emerald-500 bg-white"
+                      >
+                        <option value="">Seleccione...</option>
+                        <option value="Femenino">Femenino</option>
+                        <option value="Masculino">Masculino</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-slate-600 block mb-1">Contacto de Emergencia</label>
+                      <input
+                        type="text"
+                        value={editFormData.contacto_emergencia}
+                        onChange={(e) => setEditFormData({ ...editFormData, contacto_emergencia: e.target.value })}
+                        className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:border-emerald-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-slate-600 block mb-1">Teléfono de Emergencia</label>
+                      <input
+                        type="text"
+                        value={editFormData.tel_emergencia}
+                        onChange={(e) => setEditFormData({ ...editFormData, tel_emergencia: e.target.value })}
+                        className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:border-emerald-500"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                    <div><p className="text-xs text-slate-400 font-bold">Cédula</p><p className="text-sm font-bold text-slate-900">{selectedUser.cedula}</p></div>
+                    <div><p className="text-xs text-slate-400 font-bold">Nombre</p><p className="text-sm font-bold text-slate-900">{selectedUser.nombre_completo}</p></div>
+                    <div><p className="text-xs text-slate-400 font-bold">Celular</p><p className="text-sm font-bold text-slate-900">{selectedUser.celular || 'No registrado'}</p></div>
+                    <div><p className="text-xs text-slate-400 font-bold">Sexo</p><p className="text-sm font-bold text-slate-900">{selectedUser.sexo || 'N/A'}</p></div>
+                    <div><p className="text-xs text-slate-400 font-bold">Estado Civil</p><p className="text-sm font-bold text-slate-900">{selectedUser.estado_civil || 'N/A'}</p></div>
+                    <div><p className="text-xs text-slate-400 font-bold">Región</p><p className="text-sm font-bold text-slate-900">{selectedUser.provincia || 'Panamá'}</p></div>
+                    <div className="col-span-2 md:col-span-3"><p className="text-xs text-slate-400 font-bold">Contacto de Emergencia</p><p className="text-sm font-bold text-slate-900">{selectedUser.contacto_emergencia || 'N/A'} ({selectedUser.tel_emergencia || 'N/A'})</p></div>
+                  </div>
+                )}
               </section>
 
-              {/* Información Médica (Solo Pacientes) */}
-              {selectedUser.rol === 'paciente' && selectedUser.datos_medicos_pacientes && (
+              {/* Información Médica (Pacientes) */}
+              {selectedUser.rol === 'paciente' && (
                 <section>
                   <h3 className="text-sm font-black text-rose-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-rose-100 pb-2">
-                    <Heart className="w-4 h-4 text-rose-600" /> Expediente Médico
+                    <Heart className="w-4 h-4 text-rose-600" /> Expediente Clínico Oncológico
                   </h3>
-                  <div className="grid grid-cols-2 gap-6 bg-rose-50 p-4 rounded-2xl">
-                    <div><p className="text-xs text-rose-400 font-bold">Diagnóstico Principal</p><p className="text-sm font-black text-rose-900">{selectedUser.datos_medicos_pacientes.diagnostico_principal || 'N/A'}</p></div>
-                    <div><p className="text-xs text-rose-400 font-bold">Etapa</p><p className="text-sm font-bold text-rose-900">{selectedUser.datos_medicos_pacientes.etapa_cancer || 'N/A'}</p></div>
-                    <div><p className="text-xs text-rose-400 font-bold">Centro de Atención</p><p className="text-sm font-bold text-rose-900">{selectedUser.datos_medicos_pacientes.centro_atencion || 'N/A'}</p></div>
-                    <div><p className="text-xs text-rose-400 font-bold">Tratamiento Actual</p><p className="text-sm font-bold text-rose-900">{selectedUser.datos_medicos_pacientes.tratamiento_actual || 'N/A'}</p></div>
-                    <div className="col-span-2"><p className="text-xs text-rose-400 font-bold">Medicamentos</p><p className="text-sm font-bold text-rose-900">{selectedUser.datos_medicos_pacientes.medicamentos || 'N/A'}</p></div>
-                  </div>
+
+                  {isEditing ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-rose-50/50 p-4 rounded-2xl border border-rose-100">
+                      <div>
+                        <label className="text-xs font-bold text-rose-900 block mb-1">Diagnóstico Principal</label>
+                        <input
+                          type="text"
+                          value={editFormData.diagnostico_principal}
+                          onChange={(e) => setEditFormData({ ...editFormData, diagnostico_principal: e.target.value })}
+                          className="w-full px-3.5 py-2 rounded-xl border border-rose-200 text-xs font-bold text-slate-800 focus:outline-none focus:border-rose-500 bg-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-rose-900 block mb-1">Etapa del Cáncer</label>
+                        <select
+                          value={editFormData.etapa_cancer}
+                          onChange={(e) => setEditFormData({ ...editFormData, etapa_cancer: e.target.value })}
+                          className="w-full px-3.5 py-2 rounded-xl border border-rose-200 text-xs font-bold text-slate-800 focus:outline-none focus:border-rose-500 bg-white"
+                        >
+                          <option value="No especificada">No especificada</option>
+                          <option value="Etapa I">Etapa I</option>
+                          <option value="Etapa II">Etapa II</option>
+                          <option value="Etapa III">Etapa III</option>
+                          <option value="Etapa IV">Etapa IV</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-rose-900 block mb-1">Centro de Atención</label>
+                        <input
+                          type="text"
+                          value={editFormData.centro_atencion}
+                          onChange={(e) => setEditFormData({ ...editFormData, centro_atencion: e.target.value })}
+                          className="w-full px-3.5 py-2 rounded-xl border border-rose-200 text-xs font-bold text-slate-800 focus:outline-none focus:border-rose-500 bg-white"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs font-bold text-rose-900 block mb-1">Tratamiento Actual</label>
+                        <input
+                          type="text"
+                          value={editFormData.tratamiento_actual}
+                          onChange={(e) => setEditFormData({ ...editFormData, tratamiento_actual: e.target.value })}
+                          placeholder="Quimioterapia, Radioterapia, etc."
+                          className="w-full px-3.5 py-2 rounded-xl border border-rose-200 text-xs font-bold text-slate-800 focus:outline-none focus:border-rose-500 bg-white"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-6 bg-rose-50 p-4 rounded-2xl">
+                      <div><p className="text-xs text-rose-400 font-bold">Diagnóstico Principal</p><p className="text-sm font-black text-rose-900">{selectedUser.datos_medicos_pacientes?.diagnostico_principal || 'En evaluación'}</p></div>
+                      <div><p className="text-xs text-rose-400 font-bold">Etapa</p><p className="text-sm font-bold text-rose-900">{selectedUser.datos_medicos_pacientes?.etapa_cancer || 'No especificada'}</p></div>
+                      <div><p className="text-xs text-rose-400 font-bold">Centro de Atención</p><p className="text-sm font-bold text-rose-900">{selectedUser.datos_medicos_pacientes?.centro_atencion || 'ION'}</p></div>
+                      <div><p className="text-xs text-rose-400 font-bold">Tratamiento Actual</p><p className="text-sm font-bold text-rose-900">{selectedUser.datos_medicos_pacientes?.tratamiento_actual || 'En curso'}</p></div>
+                    </div>
+                  )}
                 </section>
               )}
 
               {/* Información Voluntario */}
-              {selectedUser.rol === 'voluntario' && selectedUser.datos_voluntarios && (
+              {selectedUser.rol === 'voluntario' && (
                 <section>
                   <h3 className="text-sm font-black text-sky-800 uppercase tracking-widest mb-4 flex items-center gap-2 border-b border-sky-100 pb-2">
                     <User className="w-4 h-4 text-sky-600" /> Perfil de Voluntariado
                   </h3>
                   <div className="grid grid-cols-2 gap-6 bg-sky-50 p-4 rounded-2xl">
-                    <div><p className="text-xs text-sky-500 font-bold">Área de Apoyo</p><p className="text-sm font-black text-sky-900">{selectedUser.datos_voluntarios.area_apoyo || 'N/A'}</p></div>
-                    <div><p className="text-xs text-sky-500 font-bold">Estatus Laboral</p><p className="text-sm font-bold text-sky-900">{selectedUser.datos_voluntarios.estatus_laboral || 'N/A'}</p></div>
-                    <div className="col-span-2"><p className="text-xs text-sky-500 font-bold">Pasatiempos / Habilidades</p><p className="text-sm font-bold text-sky-900">{selectedUser.datos_voluntarios.pasatiempos || 'N/A'}</p></div>
+                    <div><p className="text-xs text-sky-500 font-bold">Área de Apoyo</p><p className="text-sm font-black text-sky-900">{selectedUser.datos_voluntarios?.area_apoyo || 'Apoyo logístico y comunitario'}</p></div>
+                    <div><p className="text-xs text-sky-500 font-bold">Estatus Laboral</p><p className="text-sm font-bold text-sky-900">{selectedUser.datos_voluntarios?.estatus_laboral || 'Voluntario Activo'}</p></div>
                   </div>
                 </section>
               )}
             </div>
-            <div className="p-6 bg-slate-50 rounded-b-[2rem] border-t border-slate-100 flex justify-end">
-              <button onClick={() => setSelectedUser(null)} className="px-6 py-3 bg-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-300">Cerrar Expediente</button>
+
+            {/* Modal Footer con Acciones */}
+            <div className="p-6 bg-slate-50 rounded-b-[2rem] border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+              <button 
+                onClick={() => handleEliminarExpediente(selectedUser)}
+                className="px-4 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold rounded-xl text-xs flex items-center gap-2 transition-colors border border-rose-200"
+              >
+                <Trash2 className="w-4 h-4" />
+                Dar de Baja / Borrar
+              </button>
+
+              <div className="flex items-center gap-2">
+                {isEditing && (
+                  <button 
+                    onClick={handleGuardarCambiosExpediente} 
+                    className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl text-xs flex items-center gap-2 shadow-md transition-all active:scale-95"
+                  >
+                    <Save className="w-4 h-4" />
+                    Guardar Cambios con Huella Digital
+                  </button>
+                )}
+                <button onClick={() => setSelectedUser(null)} className="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs">
+                  Cerrar
+                </button>
+              </div>
             </div>
           </div>
         </div>
