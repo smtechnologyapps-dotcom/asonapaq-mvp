@@ -97,6 +97,8 @@ export const PortalVoluntarioView: React.FC<PortalVoluntarioViewProps> = ({
   const [zonas, setZonas] = useState<string[]>(volunteer.zonasHabilitadas);
 
   const [disponibilidadMsg, setDisponibilidadMsg] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [passwordSuccessMsg, setPasswordSuccessMsg] = useState('');
 
 
 

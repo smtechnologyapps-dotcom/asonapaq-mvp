@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Lock, User, ShieldCheck, Heart } from 'lucide-react';
+import { Lock, User, ShieldCheck, Heart, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { ModalCambioClave } from './ModalCambioClave';
 
 interface MockLoginProps {
   targetRole: 'paciente' | 'voluntario' | 'admin';
@@ -13,8 +14,13 @@ interface MockLoginProps {
 export const MockLogin: React.FC<MockLoginProps> = ({ targetRole, onSuccess, onRouteChange }) => {
   const [cedula, setCedula] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Control del modal de cambio de clave
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [userCedulaToChange, setUserCedulaToChange] = useState('');
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,6 +68,18 @@ export const MockLogin: React.FC<MockLoginProps> = ({ targetRole, onSuccess, onR
         return;
       }
 
+      // 5. Verificar si ingresó con la contraseña genérica o tiene pendiente cambiar clave
+      const meta = data.user.user_metadata || {};
+      const enteredGenericPassword = cleanPassword === 'Asonapaq2025*';
+      const hasNeverChangedPassword = !meta.clave_cambiada;
+
+      if (enteredGenericPassword || hasNeverChangedPassword) {
+        // Obligar al usuario a establecer su contraseña definitiva
+        setUserCedulaToChange(cleanCedula);
+        setShowPasswordModal(true);
+        return;
+      }
+
       onSuccess();
     } catch (error: any) {
       console.error('Error de autenticación:', error);
@@ -71,8 +89,21 @@ export const MockLogin: React.FC<MockLoginProps> = ({ targetRole, onSuccess, onR
     }
   };
 
+  const handlePasswordChangeSuccess = () => {
+    setShowPasswordModal(false);
+    onSuccess();
+  };
+
   return (
     <div className="min-h-[70vh] flex items-center justify-center p-4">
+      {/* Modal Obligatorio de Cambio de Contraseña */}
+      <ModalCambioClave
+        isOpen={showPasswordModal}
+        cedula={userCedulaToChange}
+        isMandatory={true}
+        onSuccess={handlePasswordChangeSuccess}
+      />
+
       <div className="bg-white max-w-md w-full rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
         <div className="bg-slate-900 p-8 text-center relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
@@ -107,18 +138,44 @@ export const MockLogin: React.FC<MockLoginProps> = ({ targetRole, onSuccess, onR
           </div>
           
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 uppercase">Contraseña o Clave *</label>
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-slate-700 uppercase">Contraseña o Clave *</label>
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 transition-colors"
+                title={showPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
+              >
+                {showPassword ? (
+                  <>
+                    <EyeOff className="w-3.5 h-3.5" /> <span>Ocultar</span>
+                  </>
+                ) : (
+                  <>
+                    <Eye className="w-3.5 h-3.5" /> <span>Ver clave</span>
+                  </>
+                )}
+              </button>
+            </div>
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
               <input 
                 required 
-                type="password" 
+                type={showPassword ? 'text' : 'password'} 
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)} 
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm font-bold text-slate-800 focus:outline-emerald-500" 
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-11 py-3 text-sm font-bold text-slate-800 focus:outline-emerald-500" 
                 placeholder="••••••••" 
                 autoComplete="current-password"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                title={showPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
             </div>
           </div>
 

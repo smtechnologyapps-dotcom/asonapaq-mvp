@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { AsonapaqLogo } from '../AsonapaqLogo';
 import { motion, AnimatePresence } from 'motion/react';
-import { PackagePlus, Clock, FileText, CheckCircle2, AlertTriangle, Send, X, LogOut, HeartHandshake, Syringe, Utensils, Home } from 'lucide-react';
+import { ModalCambioClave } from '../security/ModalCambioClave';
+import { KeyRound, PackagePlus, Clock, FileText, CheckCircle2, AlertTriangle, Send, X, LogOut, HeartHandshake, Syringe, Utensils, Home } from 'lucide-react';
 
 export const PortalPacienteView = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
@@ -13,6 +14,8 @@ export const PortalPacienteView = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const [showForm, setShowForm] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [passwordSuccessMsg, setPasswordSuccessMsg] = useState('');
   const [tipoApoyo, setTipoApoyo] = useState('Medicamentos e Insumos');
   const [descripcion, setDescripcion] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -106,8 +109,21 @@ export const PortalPacienteView = () => {
           <AsonapaqLogo className="w-48 h-48" />
         </div>
         <div className="relative z-10 text-white">
-          <h1 className="text-2xl md:text-3xl font-black mb-1">{userProfile.nombre_completo}</h1>
-          <p className="text-emerald-400 font-bold text-sm mb-4">Cédula: {userProfile.cedula}</p>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-black mb-1">{userProfile.nombre_completo}</h1>
+              <p className="text-emerald-400 font-bold text-sm">Cédula: {userProfile.cedula}</p>
+            </div>
+            <button
+              onClick={() => setShowPasswordModal(true)}
+              className="self-start sm:self-auto bg-white/15 hover:bg-white/25 border border-white/20 text-white px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 backdrop-blur-md transition-all active:scale-95"
+              title="Cambiar mi contraseña"
+            >
+              <KeyRound className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Cambiar Contraseña</span>
+            </button>
+          </div>
+
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 inline-block border border-white/10">
             <p className="text-xs text-slate-300 uppercase font-bold">Diagnóstico Principal</p>
             <p className="text-lg font-bold">{userProfile.datos_medicos_pacientes?.[0]?.diagnostico_principal || 'No registrado'}</p>

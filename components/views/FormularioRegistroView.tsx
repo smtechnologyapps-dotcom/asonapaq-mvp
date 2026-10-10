@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { AppRoute } from '../../lib/types';
-import { ShieldAlert, CheckCircle2, ChevronRight, ChevronLeft, User, Heart, Activity, Phone, Save } from 'lucide-react';
+import { ShieldAlert, Eye, EyeOff, CheckCircle2, ChevronRight, ChevronLeft, User, Heart, Activity, Phone, Save } from 'lucide-react';
 import { AsonapaqLogo } from '../AsonapaqLogo';
 import { supabase } from '../../lib/supabase';
 
@@ -16,6 +16,7 @@ export const FormularioRegistroView: React.FC<FormularioRegistroViewProps> = ({ 
   const [userType, setUserType] = useState<'paciente' | 'voluntario' | ''>('');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -219,8 +220,44 @@ export const FormularioRegistroView: React.FC<FormularioRegistroViewProps> = ({ 
                   <input type="email" name="email" value={formData.email} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-emerald-500" placeholder="Ej. correo@ejemplo.com" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-slate-700 uppercase">Crear Contraseña o PIN</label>
-                  <input required type="password" name="password" value={formData.password} onChange={handleChange} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 focus:outline-emerald-500" placeholder="Mínimo 6 caracteres" minLength={6} />
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-bold text-slate-700 uppercase">Crear Contraseña o PIN</label>
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 transition-colors"
+                      title={showPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
+                    >
+                      {showPassword ? (
+                        <>
+                          <EyeOff className="w-3.5 h-3.5" /> <span>Ocultar</span>
+                        </>
+                      ) : (
+                        <>
+                          <Eye className="w-3.5 h-3.5" /> <span>Ver clave</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <input
+                      required
+                      type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 pr-11 focus:outline-emerald-500 font-medium"
+                      placeholder="Mínimo 6 caracteres"
+                      minLength={6}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="space-y-2">

@@ -6,7 +6,8 @@ import { AppRoute, PatientRecord } from '../../lib/types';
 import { triggerN8NWebhook } from '../../lib/store';
 import { AsonapaqLogo } from '../AsonapaqLogo';
 import { motion } from 'motion/react';
-import { User, Heart, LogOut } from 'lucide-react';
+import { User, Heart, LogOut, KeyRound } from 'lucide-react';
+import { ModalCambioClave } from '../security/ModalCambioClave';
 import {
   Search,
   ShieldCheck,
