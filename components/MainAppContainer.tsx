@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { AppRoute, PatientRecord, VolunteerProfile, CommunityPost } from '../lib/types';
@@ -155,7 +155,11 @@ export const MainAppContainer: React.FC<MainAppContainerProps> = ({
         currentRoute={currentRoute}
         onRouteChange={handleRouteChange}
         isAuthenticatedAs={isAuthenticatedAs}
-        onLogout={() => { setIsAuthenticatedAs(null); handleRouteChange('inicio_publica'); }}
+        onLogout={async () => {
+          await supabase.auth.signOut();
+          setIsAuthenticatedAs(null);
+          handleRouteChange('inicio_publica');
+        }}
       />
       <main className="flex-1 w-full pt-16 pb-20 relative overflow-x-hidden">
         <AnimatePresence mode="wait" custom={direction}>

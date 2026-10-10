@@ -6,7 +6,7 @@ import { AppRoute, PatientRecord } from '../../lib/types';
 import { triggerN8NWebhook } from '../../lib/store';
 import { AsonapaqLogo } from '../AsonapaqLogo';
 import { motion } from 'motion/react';
-import { User, Heart } from 'lucide-react';
+import { User, Heart, LogOut } from 'lucide-react';
 import {
   Search,
   ShieldCheck,
@@ -364,6 +364,21 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
         >
           <FileSpreadsheet className="w-4 h-4" />
           <span className="hidden sm:inline">Exportar Excel</span>
+        </button>
+        <button
+          onClick={async () => {
+            await supabase.auth.signOut();
+            if (onRouteChange) {
+              onRouteChange('inicio_publica');
+            } else {
+              window.location.reload();
+            }
+          }}
+          className="h-11 px-4 rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 font-bold text-xs flex items-center gap-2 hover:bg-rose-100 transition-all shadow-sm active:scale-95"
+          title="Cerrar Sesión Segura"
+        >
+          <LogOut className="w-4 h-4" />
+          <span className="hidden sm:inline">Cerrar Sesión</span>
         </button>
       </div>
 

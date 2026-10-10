@@ -18,25 +18,54 @@ export const MockLogin: React.FC<MockLoginProps> = ({ targetRole, onSuccess, onR
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     setErrorMsg('');
+
+    const cleanCedula = cedula.trim();
+    const cleanPassword = password.trim();
+
+    // 1. Validación estricta: ambos campos son obligatorios
+    if (!cleanCedula || cleanCedula.length < 3) {
+      setErrorMsg('Debe ingresar su cédula o usuario obligatoriamente.');
+      return;
+    }
+
+    if (!cleanPassword || cleanPassword.length < 4) {
+      setErrorMsg('Debe ingresar su contraseña.');
+      return;
+    }
+
+    setIsLoading(true);
+
     try {
-      // Autenticar usando el correo sintético basado en la cédula
-      const syntheticEmail = cedula.includes('@') ? cedula : `${cedula}@asonapaq.local`;
+      // 2. Limpiar cualquier sesión previa huérfana en el navegador
+      await supabase.auth.signOut();
+
+      // 3. Autenticar usando el formato sintético estandarizado
+      const syntheticEmail = cleanCedula.includes('@') 
+        ? cleanCedula.toLowerCase() 
+        : `${cleanCedula.toLowerCase()}@asonapaq.local`;
       
       const { data, error } = await supabase.auth.signInWithPassword({
         email: syntheticEmail,
-        password: password
+        password: cleanPassword
       });
 
-      if (error) {
-        throw error;
+      if (error || !data.user) {
+        throw error || new Error('Credenciales incorrectas');
+      }
+
+      // 4. Verificación de permisos según el panel de acceso
+      const userRole = data.user.user_metadata?.rol;
+      if (targetRole === 'admin' && userRole !== 'admin') {
+        await supabase.auth.signOut();
+        setErrorMsg('Acceso denegado: Esta cuenta no posee privilegios administrativos.');
+        return;
       }
 
       onSuccess();
     } catch (error: any) {
-      console.error(error);
-      setErrorMsg('Cédula o contraseña incorrecta. Por favor intente de nuevo.');
+      console.error('Error de autenticación:', error);
+      setErrorMsg('Cédula o contraseña incorrecta. Por favor verifique sus datos.');
     } finally {
       setIsLoading(false);
     }
@@ -53,31 +82,32 @@ export const MockLogin: React.FC<MockLoginProps> = ({ targetRole, onSuccess, onR
           <h2 className="text-2xl font-black text-white">
             {targetRole === 'admin' ? 'Acceso Administrativo' : `Portal del ${targetRole === 'paciente' ? 'Paciente' : 'Voluntario'}`}
           </h2>
-          <p className="text-slate-400 text-sm mt-2">Acceso seguro a su expediente y solicitudes</p>
+          <p className="text-slate-400 text-sm mt-2">Ingrese sus credenciales completas para identificarse</p>
         </div>
 
         <form onSubmit={handleLogin} className="p-8 space-y-6">
           {errorMsg && (
-            <div className="bg-rose-50 text-rose-600 text-sm font-bold p-4 rounded-xl text-center">
+            <div className="bg-rose-50 text-rose-600 text-xs font-bold p-4 rounded-xl text-center border border-rose-200 animate-in fade-in">
               {errorMsg}
             </div>
           )}
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 uppercase">Cédula o Pasaporte</label>
+            <label className="text-xs font-bold text-slate-700 uppercase">Cédula o Usuario *</label>
             <div className="relative">
               <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
               <input 
                 required 
                 value={cedula} 
                 onChange={(e) => setCedula(e.target.value)} 
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 py-3 focus:outline-emerald-500" 
-                placeholder="Ej. 8-000-0000" 
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm font-bold text-slate-800 focus:outline-emerald-500" 
+                placeholder="Ej. omnex o 8-362-114" 
+                autoComplete="username"
               />
             </div>
           </div>
           
           <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-700 uppercase">Contraseña o PIN</label>
+            <label className="text-xs font-bold text-slate-700 uppercase">Contraseña o Clave *</label>
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
               <input 
@@ -85,8 +115,9 @@ export const MockLogin: React.FC<MockLoginProps> = ({ targetRole, onSuccess, onR
                 type="password" 
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)} 
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 py-3 focus:outline-emerald-500" 
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm font-bold text-slate-800 focus:outline-emerald-500" 
                 placeholder="••••••••" 
+                autoComplete="current-password"
               />
             </div>
           </div>
@@ -94,10 +125,10 @@ export const MockLogin: React.FC<MockLoginProps> = ({ targetRole, onSuccess, onR
           <button 
             type="submit" 
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-black text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg transition-all disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-black text-white bg-emerald-600 hover:bg-emerald-700 shadow-lg transition-all disabled:opacity-50 active:scale-95"
           >
             <ShieldCheck className="w-5 h-5" /> 
-            {isLoading ? 'Verificando...' : 'Ingresar de Forma Segura'}
+            {isLoading ? 'Verificando Identidad...' : 'Ingresar de Forma Segura'}
           </button>
           
           {onRouteChange && targetRole !== 'admin' && (
