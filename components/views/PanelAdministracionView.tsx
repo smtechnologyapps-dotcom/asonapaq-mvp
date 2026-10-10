@@ -6,7 +6,7 @@ import { AppRoute, PatientRecord } from '../../lib/types';
 import { triggerN8NWebhook } from '../../lib/store';
 import { AsonapaqLogo } from '../AsonapaqLogo';
 import { motion } from 'motion/react';
-import { User, Heart, LogOut, KeyRound } from 'lucide-react';
+import { User, Heart, LogOut, KeyRound, Download, ChevronDown } from 'lucide-react';
 import { ModalCambioClave } from '../security/ModalCambioClave';
 import {
   Search,
@@ -75,6 +75,8 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
   const [chartFilterApoyo, setChartFilterApoyo] = useState('Todos');
   const [filtroDirectorio, setFiltroDirectorio] = useState<'todos' | 'paciente' | 'voluntario'>('todos');
   const [busquedaDirectorio, setBusquedaDirectorio] = useState('');
+  const [showExportMenu, setShowExportMenu] = useState(false);
+  const [exportToastMsg, setExportToastMsg] = useState('');
 
   const countPacientes = useMemo(() => directorios.filter(d => d.rol === 'paciente').length, [directorios]);
   const countVoluntarios = useMemo(() => directorios.filter(d => d.rol === 'voluntario').length, [directorios]);
@@ -326,6 +328,115 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
     return { apoyos, regiones, estados, totalFiltered: filtered.length };
   }, [patients, chartFilterRegion, chartFilterEstado, chartFilterApoyo]);
 
+  
+  // Generador de datos planos para exportación
+  const obtenerDatasetExportacion = () => {
+    return directorios.map((u: any, idx: number) => {
+      const dm = u.datos_medicos_pacientes || {};
+      const dv = u.datos_voluntarios || {};
+      return {
+        'No.': idx + 1,
+        'ID Sistema': u.id,
+        'Nombre Completo': u.nombre_completo || 'N/A',
+        'Cédula / Identificación': u.cedula || 'N/A',
+        'Rol': u.rol ? u.rol.toUpperCase() : 'PACIENTE',
+        'Celular': u.celular || 'N/A',
+        'Provincia': u.provincia || 'N/A',
+        'Sexo': u.sexo || 'N/A',
+        'Estado Civil': u.estado_civil || 'N/A',
+        'Diagnóstico Principal': dm.diagnostico_principal || dv.area_apoyo || 'N/A',
+        'Etapa': dm.etapa_cancer || 'N/A',
+        'Centro de Atención': dm.centro_atencion || 'ION',
+        'Tratamiento': dm.tratamiento_actual || 'N/A',
+        'Medicamentos': dm.medicamentos || 'N/A',
+        'Contacto Emergencia': u.contacto_emergencia || 'N/A',
+        'Tel Emergencia': u.tel_emergencia || 'N/A',
+        'Fecha Registro': u.creado_en ? new Date(u.creado_en).toLocaleDateString('es-PA') : 'N/A'
+      };
+    });
+  };
+
+  // Descarga directa a CSV con soporte UTF-8 (BOM) para acentos y tildes en Excel
+  const descargarCSV = () => {
+    const data = obtenerDatasetExportacion();
+    if (!data.length) {
+      alert('No hay datos disponibles para exportar.');
+      return;
+    }
+    const headers = Object.keys(data[0]);
+    const csvRows = [headers.join(',')];
+
+    for (const row of data) {
+      const values = headers.map(h => {
+        const val = (row as any)[h] || '';
+        const escaped = ('' + val).replace(/"/g, '""');
+        return `"${escaped}"`;
+      });
+      csvRows.push(values.join(','));
+    }
+
+    const csvContent = '\uFEFF' + csvRows.join('\r\n'); // \uFEFF es el BOM de UTF-8
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Censo_Maestro_ASONAPAQ_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setShowExportMenu(false);
+    setExportToastMsg('¡Archivo CSV descargado exitosamente!');
+    setTimeout(() => setExportToastMsg(''), 4500);
+  };
+
+  // Descarga directa a Excel compatible nativo (.xls SpreadsheetML)
+  const descargarExcel = () => {
+    const data = obtenerDatasetExportacion();
+    if (!data.length) {
+      alert('No hay datos disponibles para exportar.');
+      return;
+    }
+    const headers = Object.keys(data[0]);
+    
+    let tableHtml = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">';
+    tableHtml += '<head><meta charset="utf-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>Censo ASONAPAQ</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head>';
+    tableHtml += '<body style="font-family:Arial, sans-serif;">';
+    tableHtml += '<h2>ASOCIACIÓN NACIONAL DE PACIENTES DE QUIMIOTERAPIA (ASONAPAQ)</h2>';
+    tableHtml += '<h3>Censo Maestro de Pacientes y Voluntarios - Auditoría Social</h3>';
+    tableHtml += '<table border="1" cellpadding="5" cellspacing="0" style="border-collapse:collapse;border:1px solid #cbd5e1;">';
+    
+    // Encabezados
+    tableHtml += '<tr style="background-color:#047857;color:#ffffff;font-weight:bold;">';
+    headers.forEach(h => {
+      tableHtml += `<th style="padding:8px;border:1px solid #065f46;">${h}</th>`;
+    });
+    tableHtml += '</tr>';
+
+    // Filas
+    data.forEach((row, i) => {
+      const bgColor = i % 2 === 0 ? '#f8fafc' : '#ffffff';
+      tableHtml += `<tr style="background-color:${bgColor};">`;
+      headers.forEach(h => {
+        tableHtml += `<td style="padding:6px;border:1px solid #e2e8f0;">${(row as any)[h] || ''}</td>`;
+      });
+      tableHtml += '</tr>';
+    });
+
+    tableHtml += '</table></body></html>';
+
+    const blob = new Blob([tableHtml], { type: 'application/vnd.ms-excel;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Censo_Maestro_ASONAPAQ_${new Date().toISOString().slice(0, 10)}.xls`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setShowExportMenu(false);
+    setExportToastMsg('¡Archivo Excel (.xls) descargado exitosamente!');
+    setTimeout(() => setExportToastMsg(''), 4500);
+  };
+
   const handleExportarDatos = async () => {
     await triggerN8NWebhook('EVT_EXPORTAR_MAESTRO', 'Exportar Data a Google Sheets', {
       timestamp: new Date().toISOString(),
@@ -359,13 +470,50 @@ export const PanelAdministracionView: React.FC<PanelAdministracionViewProps> = (
             <p className="text-xs sm:text-sm text-slate-500 font-medium truncate">Inteligencia de Datos y Reportes</p>
           </div>
         </div>
-        <button
-          onClick={handleExportarDatos}
-          className="h-11 px-5 rounded-2xl bg-emerald-600 text-white font-bold text-xs flex items-center gap-2 hover:bg-emerald-700 transition-all shadow-md hover:shadow-lg active:scale-95"
-        >
-          <FileSpreadsheet className="w-4 h-4" />
-          <span className="hidden sm:inline">Exportar Excel</span>
-        </button>
+        
+        {/* Selector de Exportación CSV / Excel */}
+        <div className="relative">
+          <button
+            onClick={() => setShowExportMenu(!showExportMenu)}
+            className="h-11 px-5 rounded-2xl bg-emerald-600 text-white font-bold text-xs flex items-center gap-2 hover:bg-emerald-700 transition-all shadow-md hover:shadow-lg active:scale-95"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            <span className="hidden sm:inline">Exportar Datos</span>
+            <ChevronDown className="w-3.5 h-3.5 ml-0.5 text-emerald-200" />
+          </button>
+
+          {showExportMenu && (
+            <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-slate-200 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+              <div className="px-3 py-1.5 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                Seleccione Formato de Descarga
+              </div>
+              <button
+                onClick={descargarExcel}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 transition-colors text-left"
+              >
+                <div className="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                  <FileSpreadsheet className="w-4 h-4" />
+                </div>
+                <div>
+                  <p className="font-bold text-slate-900">Formato Excel (.xls)</p>
+                  <p className="text-[10px] text-slate-500 font-normal">Con colores y diseño institucional</p>
+                </div>
+              </button>
+              <button
+                onClick={descargarCSV}
+                className="w-full flex items-center gap-3 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-800 transition-colors text-left"
+              >
+                <div className="w-7 h-7 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0">
+                  <Download className="w-4 h-4" />
+                </div>
+                <div>
+                  <p className="font-bold text-slate-900">Formato CSV (.csv)</p>
+                  <p className="text-[10px] text-slate-500 font-normal">Compatible universal (UTF-8)</p>
+                </div>
+              </button>
+            </div>
+          )}
+        </div>
         <button
           onClick={async () => {
             await supabase.auth.signOut();
